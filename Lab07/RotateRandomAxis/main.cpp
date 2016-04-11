@@ -46,8 +46,8 @@ public:
 	  static float lookat =1.0f;
 	  static float professorVelocity =200.0f; 
 	  Vector3 axis(0.0f, lookat, 0.0f);
-	  static float rotAngle = 0.0f;
-	  rotAngle++;
+	  static float roatationDegree = 0.0f;
+	  roatationDegree++;
 	  Vector3 rot(cos(i * 10) * 30.0f, 0.0f, sin(i * 10) * 30.0f);
 	  axis.normalise();
 	  if (mProfessorNode->getPosition().z < -250.0f || mProfessorNode->getPosition().z >250.0f){
@@ -59,7 +59,7 @@ public:
 	  }
 
 	  mProfessorNode->translate(px, py, professorVelocity * evt.timeSinceLastFrame);
-	  mNinjaNode->setPosition(cos(rotAngle  *(3.141592 / 180.0f)) * 100.0f, 1.0f, sin(-rotAngle * (3.141592 / 180.0f)) * 100.0f);
+	  mNinjaNode->setPosition(cos(roatationDegree  *(3.141592 / 180.0f)) * 100.0f, 1.0f, sin(-roatationDegree * (3.141592 / 180.0f)) * 100.0f);
 	  mNinjaNode->setScale(8.0f, 8.0f, 8.0f);
 	  
 	  mNinjaNode->rotate(axis, Degree(0.5f));
