@@ -1,0 +1,10 @@
+﻿Build started 2016-04-06 오후 10:06:48.
+     1>Project "D:\GameEngineWorking\Lab07\RotateRandomAxis\Lab.vcxproj" on node 2 (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (d:\bin\int\Debug\) contains files shared from another project (HelloProfessor.vcxproj, MoveProfessorNinja.vcxproj, MoveWithKey.vcxproj, ProfessorNinja.vcxproj, Quaternion.vcxproj, Rotate.vcxproj, Scale.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>Link:
+         Lab.vcxproj -> d:\bin\Debug\RotateRandomAxis.exe
+     1>Done Building Project "D:\GameEngineWorking\Lab07\RotateRandomAxis\Lab.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.16

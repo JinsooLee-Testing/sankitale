@@ -1,0 +1,19 @@
+﻿Build started 2016-03-22 오후 3:54:55.
+     1>Project "D:\GameEngineWorking\Lab03\HelloProfessor\Lab.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         D:\Program Files\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Iinclude /ID:\SDK\OgreSDK\boost /ID:\SDK\OgreSDK\include /ID:\SDK\OgreSDK\include\OGRE /Zi /nologo /W3 /WX- /O2 /Ob1 /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"D:\bin\int\Release\\" /Fd"D:\bin\int\Release\vc120.pdb" /Gd /TP /errorReport:prompt main.cpp
+         main.cpp
+       Link:
+         D:\Program Files\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\bin\Release\HelloProfessor.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:D:\SDK\OgreSDK\lib\Release /LIBPATH:D:\SDK\OgreSDK\boost\lib OgreMain.lib OIS.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\bin\Release\HelloProfessor.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\bin\Release\HelloProfessor.lib" /MACHINE:X64 D:\bin\int\Release\main.obj
+         Generating code
+         Finished generating code
+         Lab.vcxproj -> D:\bin\Release\HelloProfessor.exe
+       PostBuildEvent:
+         copy "D:\bin\Release\HelloProfessor.exe" "D:\SDK\OgreSDK\Bin\Release"
+         :VCEnd
+                 1개 파일이 복사되었습니다.
+     1>Done Building Project "D:\GameEngineWorking\Lab03\HelloProfessor\Lab.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:18.57
