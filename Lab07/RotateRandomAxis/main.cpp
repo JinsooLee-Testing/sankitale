@@ -43,16 +43,16 @@ public:
   {
     // Fill Here ----------------------------------------------
 	  static int i = 0;
-	  static float lookat =1.0f;
+	  static float yAxis =1.0f;
 	  static float professorVelocity =200.0f; 
-	  Vector3 axis(0.0f, lookat, 0.0f);
+	  Vector3 axis(0.0f, yAxis, 0.0f);
 	  static float roatationDegree = 0.0f;
 	  roatationDegree++;
 	  Vector3 rot(cos(i * 10) * 30.0f, 0.0f, sin(i * 10) * 30.0f);
 	  axis.normalise();
 	  if (mProfessorNode->getPosition().z < -250.0f || mProfessorNode->getPosition().z >250.0f){
 		  professorVelocity *= -1;
-		  lookat *= -1;
+		  yAxis *= -1;
 		  mProfessorNode->yaw(Degree(180.0f));
 
 
