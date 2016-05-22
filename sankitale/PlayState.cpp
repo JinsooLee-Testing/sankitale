@@ -37,7 +37,8 @@ void PlayState::enter(void)
 	mCameraHolder->attachObject(mCamera);
 	mCamera->lookAt(mCameraYaw->getPosition());
 
-	
+	mCharacterDirection = Ogre::Vector3::ZERO;
+
 	mAnimationState = mCharacterEntity->getAnimationState("Idle");
 	mPlayerState = IDLE;
 	mAnimationState->setLoop(true);
@@ -72,7 +73,14 @@ void PlayState::resume(void)
 bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 {
 	mAnimationState->addTime(evt.timeSinceLastFrame);
-
+	if (mCharacterDirection != Vector3::ZERO)
+	{
+		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
+		Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
+		mCharacterYaw->setOrientation(quat);
+		mCharacterRoot->translate(mCharacterDirection.normalisedCopy() * 111 * evt.timeSinceLastFrame,
+			Node::TransformSpace::TS_LOCAL);
+	}
 	return true;
 }
 
@@ -100,7 +108,7 @@ bool PlayState::frameEnded(GameManager* game, const FrameEvent& evt)
 bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 {
 	// Fill Here -------------------------------------------
-
+	
 	switch (e.key)
 	{
 	case OIS::KC_W:
@@ -109,8 +117,28 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 		mAnimationState = mCharacterEntity->getAnimationState("Walk");
 		mAnimationState->setLoop(true);
 		mAnimationState->setEnabled(true);
+		mCharacterDirection.z += -1.f;
 		break;
-
+	case OIS::KC_A:
+		if (WALK == mPlayerState || RUN == mPlayerState){
+			mAnimationState->setEnabled(false);
+			mAnimationState = mCharacterEntity->getAnimationState("Idle");
+			mAnimationState->setLoop(true);
+			mAnimationState->setEnabled(true);
+			mPlayerState = IDLE;
+			mCharacterDirection.x += -1.f;
+		}
+			break;
+	case OIS::KC_D:
+		if (WALK == mPlayerState || RUN == mPlayerState){
+			mAnimationState->setEnabled(false);
+			mAnimationState = mCharacterEntity->getAnimationState("Idle");
+			mAnimationState->setLoop(true);
+			mAnimationState->setEnabled(true);
+			mPlayerState = IDLE;
+			mCharacterDirection.x += 1.f;
+		}
+			break;
 	case OIS::KC_LSHIFT:
 		if (WALK == mPlayerState)
 		{
@@ -121,10 +149,7 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 			mAnimationState->setEnabled(true);
 		}
 		break;
-	/*case OIS::KC_O:
-		game->pushState(OptionState::getInstance());
-		break;
-*/
+
 	case OIS::KC_ESCAPE:
 		game->changeState(TitleState::getInstance());
 		break;
@@ -144,9 +169,29 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 			mAnimationState->setLoop(true);
 			mAnimationState->setEnabled(true);
 			mPlayerState = IDLE;
+			mCharacterDirection.z -= -1.f;
+			break;
+		}
+	case OIS::KC_A:
+		if (WALK == mPlayerState || RUN == mPlayerState){
+			mAnimationState->setEnabled(false);
+			mAnimationState = mCharacterEntity->getAnimationState("Idle");
+			mAnimationState->setLoop(true);
+			mAnimationState->setEnabled(true);
+			mPlayerState = IDLE;
+			mCharacterDirection.x -= -1.f;
 		}
 		break;
-
+	case OIS::KC_D:
+		if (WALK == mPlayerState || RUN == mPlayerState){
+			mAnimationState->setEnabled(false);
+			mAnimationState = mCharacterEntity->getAnimationState("Idle");
+			mAnimationState->setLoop(true);
+			mAnimationState->setEnabled(true);
+			mPlayerState = IDLE;
+			mCharacterDirection.x -= 1.f;
+		}
+		break;
 	case OIS::KC_LSHIFT:
 		if (RUN == mPlayerState){
 			mAnimationState->setEnabled(false);

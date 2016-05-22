@@ -26,7 +26,7 @@ public:
 	void setAnimState(Ogre::AnimationState* anim) { mAnimationState = anim; }
 
 private:
-
+	//const Ogre::FrameEvent& evt;
 	void _setLights(void);
 	void _drawGroundPlane(void);
 	void _drawGridPlane(void);
@@ -47,12 +47,14 @@ private:
 	Ogre::SceneNode* mCameraYaw;
 	Ogre::SceneNode* mCameraPitch;
 
+	
+	Ogre::Vector3 mCharacterDirection;
 	Ogre::Entity* mCharacterEntity;
 
 	Ogre::AnimationState* mAnimationState;
 
 	Ogre::Overlay*           mInformationOverlay;
 	int mPlayerState;
-	enum  {IDLE,WALK,RUN};
+	enum  {IDLE,WALK,LEFTWALK,RIGHTWALK,RUN};
 
 };

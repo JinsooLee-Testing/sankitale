@@ -19,7 +19,7 @@
 #include <Overlay/OgreTextAreaOverlayElement.h>
 #include <Overlay/OgreFontManager.h>
 #include <OIS/OIS.h>
-
+#include<iostream>
 
 class GameState;
 
