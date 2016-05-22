@@ -65,7 +65,7 @@ bool OptionState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 		mAnimationState->setEnabled(true);
 		break;
 
-	case OIS::KC_R:
+	case OIS::KC_LSHIFT:
 		mAnimationState->setEnabled(false);
 		mAnimationState = mCharacterEntity->getAnimationState("Run");
 		mAnimationState->setLoop(true);
