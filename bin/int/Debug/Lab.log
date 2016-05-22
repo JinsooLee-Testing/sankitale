@@ -1,10 +1,24 @@
-﻿Build started 2016-04-06 오후 10:06:48.
-     1>Project "D:\GameEngineWorking\Lab07\RotateRandomAxis\Lab.vcxproj" on node 2 (Build target(s)).
-     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (d:\bin\int\Debug\) contains files shared from another project (HelloProfessor.vcxproj, MoveProfessorNinja.vcxproj, MoveWithKey.vcxproj, ProfessorNinja.vcxproj, Quaternion.vcxproj, Rotate.vcxproj, Scale.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-     1>Link:
-         Lab.vcxproj -> d:\bin\Debug\RotateRandomAxis.exe
-     1>Done Building Project "D:\GameEngineWorking\Lab07\RotateRandomAxis\Lab.vcxproj" (Build target(s)).
+﻿Build started 2016-05-21 오후 10:18:40.
+     1>Project "D:\GameEngineWorking\Lab12\GameFramework\Lab.vcxproj" on node 2 (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (d:\bin\int\Debug\) contains files shared from another project (3DCharacterCameraController.vcxproj, CameraLagController.vcxproj, CameraLegController.vcxproj, CharacterController.vcxproj, HelloProfessor.vcxproj, MoveProfessorAndRotateFish.vcxproj, MoveProfessorNinja.vcxproj, MoveWithKey.vcxproj, PictureInPicture.vcxproj, ProfessorNinja.vcxproj, Quaternion.vcxproj, Rotate.vcxproj, RotateRandomAxis.vcxproj, Scale.vcxproj, SphericalCamera.vcxproj, WalkingAroundProfessorAndFollowNinja.vcxproj, WalkingAroundProfessorCorrectFacing.vcxproj, WalkingAroundProfessorSmoothRotation.vcxproj, WalkingProfessor.vcxproj, WowCameraControl.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>ClCompile:
+         D:\Program Files\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Iinclude /ID:\SDK\OgreSDK\boost /ID:\SDK\OgreSDK\include /ID:\SDK\OgreSDK\include\OGRE /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"d:\bin\int\Debug\\" /Fd"d:\bin\int\Debug\vc120.pdb" /Gd /TP /errorReport:prompt main.cpp OptionState.cpp PlayState.cpp TitleState.cpp
+         main.cpp
+         OptionState.cpp
+         PlayState.cpp
+     1>PlayState.cpp(131): warning C4244: 'argument' : conversion from 'const int' to 'Ogre::Real', possible loss of data
+     1>PlayState.cpp(132): warning C4244: 'argument' : conversion from 'const int' to 'Ogre::Real', possible loss of data
+         TitleState.cpp
+         Generating Code...
+       Link:
+         D:\Program Files\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"d:\bin\Debug\GameFramework.exe" /INCREMENTAL /NOLOGO /LIBPATH:D:\SDK\OgreSDK\lib\Debug /LIBPATH:D:\SDK\OgreSDK\boost\lib OgreMain_d.lib OIS_d.lib OgreOverlay_d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"d:\bin\Debug\camera.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"d:\bin\Debug\GameFramework.lib" /MACHINE:X64 d:\bin\int\Debug\GameManager.obj
+         d:\bin\int\Debug\main.obj
+         d:\bin\int\Debug\OptionState.obj
+         d:\bin\int\Debug\PlayState.obj
+         d:\bin\int\Debug\TitleState.obj
+         Lab.vcxproj -> d:\bin\Debug\GameFramework.exe
+     1>Done Building Project "D:\GameEngineWorking\Lab12\GameFramework\Lab.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.16
+Time Elapsed 00:00:38.78
