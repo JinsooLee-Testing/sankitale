@@ -37,7 +37,7 @@ void PlayState::enter(void)
 	mCameraHolder->attachObject(mCamera);
 	mCamera->lookAt(mCameraYaw->getPosition());
 
-	mAnimationState = mCharacterEntity->getAnimationState("Run");
+	mAnimationState = mCharacterEntity->getAnimationState("Idle");
 	mAnimationState->setLoop(true);
 	mAnimationState->setEnabled(true);
 
@@ -95,10 +95,10 @@ bool PlayState::frameEnded(GameManager* game, const FrameEvent& evt)
 }
 
 
-bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
-{
-	return true;
-}
+//bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
+//{
+//	return true;
+//}
 
 bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 {
@@ -131,6 +131,26 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	return true;
 }
 
+bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
+{
+	switch (e.key)
+	{
+	case OIS::KC_W:
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Idle");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
+		break;
+
+	case OIS::KC_LSHIFT:
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Walk");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
+		break;
+	}
+	return true;
+}
 bool PlayState::mousePressed(GameManager* game, const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
 	return true;
