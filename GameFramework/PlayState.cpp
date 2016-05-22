@@ -37,7 +37,9 @@ void PlayState::enter(void)
 	mCameraHolder->attachObject(mCamera);
 	mCamera->lookAt(mCameraYaw->getPosition());
 
+	
 	mAnimationState = mCharacterEntity->getAnimationState("Idle");
+	mPlayerState = IDLE;
 	mAnimationState->setLoop(true);
 	mAnimationState->setEnabled(true);
 
@@ -95,11 +97,6 @@ bool PlayState::frameEnded(GameManager* game, const FrameEvent& evt)
 }
 
 
-//bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
-//{
-//	return true;
-//}
-
 bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 {
 	// Fill Here -------------------------------------------
@@ -107,6 +104,7 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	switch (e.key)
 	{
 	case OIS::KC_W:
+		mPlayerState = WALK;
 		mAnimationState->setEnabled(false);
 		mAnimationState = mCharacterEntity->getAnimationState("Walk");
 		mAnimationState->setLoop(true);
@@ -114,10 +112,14 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 		break;
 
 	case OIS::KC_LSHIFT:
-		mAnimationState->setEnabled(false);
-		mAnimationState = mCharacterEntity->getAnimationState("Run");
-		mAnimationState->setLoop(true);
-		mAnimationState->setEnabled(true);
+		if (WALK == mPlayerState)
+		{
+			mPlayerState = RUN;
+			mAnimationState->setEnabled(false);
+			mAnimationState = mCharacterEntity->getAnimationState("Run");
+			mAnimationState->setLoop(true);
+			mAnimationState->setEnabled(true);
+		}
 		break;
 	/*case OIS::KC_O:
 		game->pushState(OptionState::getInstance());
@@ -136,18 +138,24 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 	switch (e.key)
 	{
 	case OIS::KC_W:
-		mAnimationState->setEnabled(false);
-		mAnimationState = mCharacterEntity->getAnimationState("Idle");
-		mAnimationState->setLoop(true);
-		mAnimationState->setEnabled(true);
+		if (WALK == mPlayerState || RUN == mPlayerState){
+			mAnimationState->setEnabled(false);
+			mAnimationState = mCharacterEntity->getAnimationState("Idle");
+			mAnimationState->setLoop(true);
+			mAnimationState->setEnabled(true);
+			mPlayerState = IDLE;
+		}
 		break;
 
 	case OIS::KC_LSHIFT:
-		mAnimationState->setEnabled(false);
-		mAnimationState = mCharacterEntity->getAnimationState("Walk");
-		mAnimationState->setLoop(true);
-		mAnimationState->setEnabled(true);
-		break;
+		if (RUN == mPlayerState){
+			mAnimationState->setEnabled(false);
+			mAnimationState = mCharacterEntity->getAnimationState("Walk");
+			mAnimationState->setLoop(true);
+			mAnimationState->setEnabled(true);
+			mPlayerState = WALK;
+			break;
+		}
 	}
 	return true;
 }

@@ -52,5 +52,7 @@ private:
 	Ogre::AnimationState* mAnimationState;
 
 	Ogre::Overlay*           mInformationOverlay;
+	int mPlayerState;
+	enum  {IDLE,WALK,RUN};
 
 };
