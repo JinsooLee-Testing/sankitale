@@ -119,7 +119,7 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 		mAnimationState->setEnabled(true);
 		mCharacterDirection.z += -1.f;
 		break;
-	case OIS::KC_A:
+	/*case OIS::KC_A:
 		if (WALK == mPlayerState || RUN == mPlayerState){
 			mAnimationState->setEnabled(false);
 			mAnimationState = mCharacterEntity->getAnimationState("Idle");
@@ -138,7 +138,7 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 			mPlayerState = IDLE;
 			mCharacterDirection.x += 1.f;
 		}
-			break;
+			break;*/
 	case OIS::KC_LSHIFT:
 		if (WALK == mPlayerState)
 		{
@@ -172,7 +172,7 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 			mCharacterDirection.z -= -1.f;
 			break;
 		}
-	case OIS::KC_A:
+	/*case OIS::KC_A:
 		if (WALK == mPlayerState || RUN == mPlayerState){
 			mAnimationState->setEnabled(false);
 			mAnimationState = mCharacterEntity->getAnimationState("Idle");
@@ -191,7 +191,7 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 			mPlayerState = IDLE;
 			mCharacterDirection.x -= 1.f;
 		}
-		break;
+		break;*/
 	case OIS::KC_LSHIFT:
 		if (RUN == mPlayerState){
 			mAnimationState->setEnabled(false);
@@ -217,10 +217,10 @@ bool PlayState::mouseReleased(GameManager* game, const OIS::MouseEvent &e, OIS::
 
 bool PlayState::mouseMoved(GameManager* game, const OIS::MouseEvent &e)
 {
-	mCameraYaw->yaw(Degree(-e.state.X.rel));
+	/*mCameraYaw->yaw(Degree(-e.state.X.rel));
 	mCameraPitch->pitch(Degree(-e.state.Y.rel));
 
-	mCameraHolder->translate(Ogre::Vector3(0, 0, -e.state.Z.rel * 0.1f));
+	mCameraHolder->translate(Ogre::Vector3(0, 0, -e.state.Z.rel * 0.1f));*/
 	return true;
 }
 
