@@ -55,6 +55,8 @@ private:
 
 	Ogre::Overlay*           mInformationOverlay;
 	int mPlayerState;
-	enum  {IDLE,WALK,LEFTWALK,RIGHTWALK,RUN};
+	int mCameraState;
+	enum {RIGHT_ROTATION,LEFT_ROTATION,NORMAL};
+	enum  {IDLE,WALK,RUN};
 
 };

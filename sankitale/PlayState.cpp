@@ -41,6 +41,7 @@ void PlayState::enter(void)
 
 	mAnimationState = mCharacterEntity->getAnimationState("Idle");
 	mPlayerState = IDLE;
+	mCameraState = NORMAL;
 	mAnimationState->setLoop(true);
 	mAnimationState->setEnabled(true);
 
@@ -73,13 +74,71 @@ void PlayState::resume(void)
 bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 {
 	mAnimationState->addTime(evt.timeSinceLastFrame);
-	if (mCharacterDirection != Vector3::ZERO)
+	static Vector3 offsetCamera = Vector3::UNIT_Z;
+	static const float cameraDragSpeed = 100.f;
+
+	// Fill Here -------------------------------------------------------------------
+	if (mCharacterDirection != Vector3::ZERO )
 	{
+
+		static const float mPlayeerWalkSpeed = 222.f;
+		static const float mPlayerRunSpeed = 444.f;
+
 		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
+		const Vector3 direction = mCharacterDirection.normalisedCopy();
 		Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
 		mCharacterYaw->setOrientation(quat);
-		mCharacterRoot->translate(mCharacterDirection.normalisedCopy() * 111 * evt.timeSinceLastFrame,
-			Node::TransformSpace::TS_LOCAL);
+
+		if (mPlayerState == WALK)	{ mCharacterRoot->translate(direction * mPlayeerWalkSpeed * evt.timeSinceLastFrame, Node::TransformSpace::TS_LOCAL); }
+		if (mPlayerState == RUN)	{ mCharacterRoot->translate(direction * mPlayerRunSpeed * evt.timeSinceLastFrame, Node::TransformSpace::TS_LOCAL); }
+
+		if (offsetCamera.length() < 150.f || mCameraState == NORMAL)
+		{
+			mCameraHolder->translate(-direction * cameraDragSpeed * evt.timeSinceLastFrame);
+			offsetCamera += -direction * cameraDragSpeed * evt.timeSinceLastFrame;
+		}
+	}
+	else
+	{
+
+		if (offsetCamera.length() > 0)
+		{
+			const static float minLength = 10.f;
+			if (offsetCamera.length() < minLength)
+			{
+				mCameraHolder->translate(-offsetCamera);
+				
+				//mCameraYaw->translate(-offsetCamera);
+				offsetCamera = Vector3::ZERO;
+			}
+			else
+			{
+				const Vector3 cameraMovDir = -1 * offsetCamera.normalisedCopy();
+				mCameraHolder->translate(cameraMovDir * cameraDragSpeed * evt.timeSinceLastFrame);
+				//mCameraYaw->translate(-cameraMovDir * cameraDragSpeed * evt.timeSinceLastFrame);
+				offsetCamera += cameraMovDir * cameraDragSpeed * evt.timeSinceLastFrame;
+			}
+		}
+	}
+
+	if (mCameraState == RIGHT_ROTATION)
+	{
+		mCameraYaw->yaw(Degree(-cameraDragSpeed * evt.timeSinceLastFrame));
+		//mCameraPitch->pitch(Degree());
+		//mCameraHolder->translate(Ogre::Vector3(0, 0, evt.timeSinceLastFrame * cameraDragSpeed));
+	}
+	else if (mCameraState == LEFT_ROTATION)
+	{
+		mCameraYaw->yaw(Degree(cameraDragSpeed * evt.timeSinceLastFrame));
+		//mCameraHolder->translate(Ogre::Vector3(0, 0, evt.timeSinceLastFrame * -cameraDragSpeed));
+		//mCameraHolder->translate(Ogre::Vector3(0, 0, evt.timeSinceLastFrame * -180.f));
+	}
+	else if (mCameraState == NORMAL)
+	{ 
+		//const Vector3 direction = mCharacterDirection.normalisedCopy();
+		//mCameraHolder->translate(-direction * cameraDragSpeed * evt.timeSinceLastFrame);
+		//mCameraHolder->translate(Ogre::Vector3(Vector3::UNIT_Z));
+		
 	}
 	return true;
 }
@@ -111,34 +170,25 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	
 	switch (e.key)
 	{
-	case OIS::KC_W:
-		mPlayerState = WALK;
-		mAnimationState->setEnabled(false);
-		mAnimationState = mCharacterEntity->getAnimationState("Walk");
-		mAnimationState->setLoop(true);
-		mAnimationState->setEnabled(true);
-		mCharacterDirection.z += -1.f;
+	case OIS::KC_UP:
+	{mPlayerState = WALK;
+	mAnimationState->setEnabled(false);
+	mAnimationState = mCharacterEntity->getAnimationState("Walk");
+	mAnimationState->setLoop(true);
+	mAnimationState->setEnabled(true);
+	mCharacterDirection.z += -1.f;
+	}
 		break;
-	/*case OIS::KC_A:
-		if (WALK == mPlayerState || RUN == mPlayerState){
-			mAnimationState->setEnabled(false);
-			mAnimationState = mCharacterEntity->getAnimationState("Idle");
-			mAnimationState->setLoop(true);
-			mAnimationState->setEnabled(true);
-			mPlayerState = IDLE;
-			mCharacterDirection.x += -1.f;
-		}
-			break;
-	case OIS::KC_D:
-		if (WALK == mPlayerState || RUN == mPlayerState){
-			mAnimationState->setEnabled(false);
-			mAnimationState = mCharacterEntity->getAnimationState("Idle");
-			mAnimationState->setLoop(true);
-			mAnimationState->setEnabled(true);
-			mPlayerState = IDLE;
-			mCharacterDirection.x += 1.f;
-		}
-			break;*/
+	case OIS::KC_LEFT:
+	{
+		mCameraState = LEFT_ROTATION;
+	}
+		break;
+	case OIS::KC_RIGHT:
+	{
+		mCameraState = RIGHT_ROTATION;
+	}
+		break;
 	case OIS::KC_LSHIFT:
 		if (WALK == mPlayerState)
 		{
@@ -153,6 +203,7 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	case OIS::KC_ESCAPE:
 		game->changeState(TitleState::getInstance());
 		break;
+
 	}
 	// -----------------------------------------------------
 	return true;
@@ -162,7 +213,7 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 {
 	switch (e.key)
 	{
-	case OIS::KC_W:
+	case OIS::KC_UP:
 		if (WALK == mPlayerState || RUN == mPlayerState){
 			mAnimationState->setEnabled(false);
 			mAnimationState = mCharacterEntity->getAnimationState("Idle");
@@ -172,26 +223,6 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 			mCharacterDirection.z -= -1.f;
 			break;
 		}
-	/*case OIS::KC_A:
-		if (WALK == mPlayerState || RUN == mPlayerState){
-			mAnimationState->setEnabled(false);
-			mAnimationState = mCharacterEntity->getAnimationState("Idle");
-			mAnimationState->setLoop(true);
-			mAnimationState->setEnabled(true);
-			mPlayerState = IDLE;
-			mCharacterDirection.x -= -1.f;
-		}
-		break;
-	case OIS::KC_D:
-		if (WALK == mPlayerState || RUN == mPlayerState){
-			mAnimationState->setEnabled(false);
-			mAnimationState = mCharacterEntity->getAnimationState("Idle");
-			mAnimationState->setLoop(true);
-			mAnimationState->setEnabled(true);
-			mPlayerState = IDLE;
-			mCharacterDirection.x -= 1.f;
-		}
-		break;*/
 	case OIS::KC_LSHIFT:
 		if (RUN == mPlayerState){
 			mAnimationState->setEnabled(false);
@@ -201,6 +232,17 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 			mPlayerState = WALK;
 			break;
 		}
+	case OIS::KC_LEFT:
+	{
+		mCameraState = NORMAL;
+	}
+	break;
+	case OIS::KC_RIGHT:
+	{
+		mCameraState = NORMAL;
+
+	}
+	break;
 	}
 	return true;
 }
