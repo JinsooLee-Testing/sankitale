@@ -58,5 +58,4 @@ private:
 	int mCameraState;
 	enum {RIGHT_ROTATION,LEFT_ROTATION,NORMAL};
 	enum  {IDLE,WALK,RUN};
-
 };

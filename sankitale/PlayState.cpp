@@ -71,25 +71,24 @@ void PlayState::resume(void)
 bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 {
 	mAnimationState->addTime(evt.timeSinceLastFrame);
-	static Vector3 offsetCamera = Vector3::UNIT_Z;
-	static const float cameraDragSpeed = 100;
+	static Vector3 offsetCamera = Vector3::ZERO;
+	static const float cameraDragSpeed = 100.f;
 
 	// Fill Here -------------------------------------------------------------------
-	if (mCharacterDirection != Vector3::ZERO )
+	if (mCharacterDirection != Vector3::ZERO)
 	{
 
-		static const float mPlayeerWalkSpeed = 222.f;
-		static const float mPlayerRunSpeed = 444.f;
+		static const float mCharacterSpeed = 400.f;
 
 		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
 		const Vector3 direction = mCharacterDirection.normalisedCopy();
 		Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
 		mCharacterYaw->setOrientation(quat);
 
-		if (mPlayerState == WALK)	{ mCharacterRoot->translate(direction * mPlayeerWalkSpeed * evt.timeSinceLastFrame, Node::TransformSpace::TS_LOCAL); }
-		if (mPlayerState == RUN)	{ mCharacterRoot->translate(direction * mPlayerRunSpeed * evt.timeSinceLastFrame, Node::TransformSpace::TS_LOCAL); }
+		mCharacterRoot->translate(direction * mCharacterSpeed * evt.timeSinceLastFrame,
+			Node::TransformSpace::TS_LOCAL);
 
-		if (offsetCamera.length() < 150.f )
+		if (offsetCamera.length() < 150.f)
 		{
 			mCameraHolder->translate(-direction * cameraDragSpeed * evt.timeSinceLastFrame);
 			offsetCamera += -direction * cameraDragSpeed * evt.timeSinceLastFrame;
@@ -115,26 +114,26 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 		}
 	}
 
-	if (mCameraState == RIGHT_ROTATION)
+	if (WALK == mPlayerState)
 	{
-		//mCharacterRoot->yaw(Degree(-cameraDragSpeed * evt.timeSinceLastFrame));
-		mCameraYaw->yaw(Degree(-cameraDragSpeed * evt.timeSinceLastFrame));
-		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
-		const Vector3 direction = mCharacterDirection.normalisedCopy();
-		Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
-		mCharacterYaw->setOrientation(quat);
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Walk");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
 	}
-	else if (mCameraState == LEFT_ROTATION)
+	else if (RUN == mPlayerState)
 	{
-		//mCharacterRoot->yaw(Degree(cameraDragSpeed * evt.timeSinceLastFrame));
-		mCameraYaw->yaw(Degree(cameraDragSpeed * evt.timeSinceLastFrame));
-		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
-		const Vector3 direction = mCharacterDirection.normalisedCopy();
-		Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
-		mCharacterYaw->setOrientation(quat);
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Run");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
 	}
-	else if (mCameraState == NORMAL)
-	{ 
+	else if (IDLE == mPlayerState)
+	{
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Idle");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
 	}
 	return true;
 }
@@ -166,40 +165,17 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	
 	switch (e.key)
 	{
-	case OIS::KC_UP:
-	{mPlayerState = WALK;
-	mAnimationState->setEnabled(false);
-	mAnimationState = mCharacterEntity->getAnimationState("Walk");
-	mAnimationState->setLoop(true);
-	mAnimationState->setEnabled(true);
-	mCharacterDirection.z += -1.f;
-	}
-		break;
-	case OIS::KC_LEFT:
-	{
-		mCameraState = LEFT_ROTATION;
-	}
-		break;
-	case OIS::KC_RIGHT:
-	{
-		mCameraState = RIGHT_ROTATION;
-	}
-		break;
+	case OIS::KC_UP:case OIS::KC_W:
+	{mPlayerState = WALK;mCharacterDirection.z += -1.f;	}break;
+	case OIS::KC_LEFT: case OIS::KC_A:
+	{mPlayerState = WALK;mCharacterDirection.x += -1.f;}break;
+	case OIS::KC_RIGHT: case OIS::KC_D:
+	{mPlayerState = WALK;mCharacterDirection.x += 1.f;}break;
 	case OIS::KC_LSHIFT:
-		if (WALK == mPlayerState)
-		{
-			mPlayerState = RUN;
-			mAnimationState->setEnabled(false);
-			mAnimationState = mCharacterEntity->getAnimationState("Run");
-			mAnimationState->setLoop(true);
-			mAnimationState->setEnabled(true);
-		}
-		break;
-
+		if (WALK == mPlayerState){mPlayerState = RUN;}break;
 	case OIS::KC_ESCAPE:
 		game->changeState(TitleState::getInstance());
 		break;
-
 	}
 	// -----------------------------------------------------
 	return true;
@@ -209,36 +185,14 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 {
 	switch (e.key)
 	{
-	case OIS::KC_UP:
-		if (WALK == mPlayerState || RUN == mPlayerState){
-			mAnimationState->setEnabled(false);
-			mAnimationState = mCharacterEntity->getAnimationState("Idle");
-			mAnimationState->setLoop(true);
-			mAnimationState->setEnabled(true);
-			mPlayerState = IDLE;
-			mCharacterDirection.z -= -1.f;
-			break;
-		}
+	case OIS::KC_UP: case OIS::KC_W:
+		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.z -= -1.f; }break;
+	case OIS::KC_LEFT: case OIS::KC_A:
+		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.x -= -1.f; }break;
+	case OIS::KC_RIGHT: case OIS::KC_D:
+		if (WALK == mPlayerState || RUN == mPlayerState){mPlayerState = IDLE;mCharacterDirection.x -= 1.f;}break;
 	case OIS::KC_LSHIFT:
-		if (RUN == mPlayerState){
-			mAnimationState->setEnabled(false);
-			mAnimationState = mCharacterEntity->getAnimationState("Walk");
-			mAnimationState->setLoop(true);
-			mAnimationState->setEnabled(true);
-			mPlayerState = WALK;
-			break;
-		}
-	case OIS::KC_LEFT:
-	{
-		mCameraState = NORMAL;
-	}
-	break;
-	case OIS::KC_RIGHT:
-	{
-		mCameraState = NORMAL;
-
-	}
-	break;
+		if (RUN == mPlayerState){ mPlayerState = WALK; }break;
 	}
 	return true;
 }
@@ -255,10 +209,10 @@ bool PlayState::mouseReleased(GameManager* game, const OIS::MouseEvent &e, OIS::
 
 bool PlayState::mouseMoved(GameManager* game, const OIS::MouseEvent &e)
 {
-	/*mCameraYaw->yaw(Degree(-e.state.X.rel));
+	mCameraYaw->yaw(Degree(-e.state.X.rel));
 	mCameraPitch->pitch(Degree(-e.state.Y.rel));
 
-	mCameraHolder->translate(Ogre::Vector3(0, 0, -e.state.Z.rel * 0.1f));*/
+	mCameraHolder->translate(Ogre::Vector3(0, 0, -e.state.Z.rel * 0.1f));
 	return true;
 }
 
@@ -325,3 +279,4 @@ void PlayState::_drawGridPlane(void)
 
 	gridPlaneNode->attachObject(gridPlane);
 }
+
