@@ -58,15 +58,12 @@ void PlayState::exit(void)
 
 void PlayState::pause(void)
 {
-	//	mAnimationState = mCharacterEntity->getA
-	//	mAnimationState = mCharacterEntity->getAnimationState("Run");
 	mAnimationState->setLoop(false);
 	mAnimationState->setEnabled(false);
 }
 
 void PlayState::resume(void)
 {
-	//	mAnimationState = mCharacterEntity->Anima`
 	mAnimationState->setLoop(true);
 	mAnimationState->setEnabled(true);
 }
@@ -75,7 +72,7 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 {
 	mAnimationState->addTime(evt.timeSinceLastFrame);
 	static Vector3 offsetCamera = Vector3::UNIT_Z;
-	static const float cameraDragSpeed = 100.f;
+	static const float cameraDragSpeed = 100;
 
 	// Fill Here -------------------------------------------------------------------
 	if (mCharacterDirection != Vector3::ZERO )
@@ -92,7 +89,7 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 		if (mPlayerState == WALK)	{ mCharacterRoot->translate(direction * mPlayeerWalkSpeed * evt.timeSinceLastFrame, Node::TransformSpace::TS_LOCAL); }
 		if (mPlayerState == RUN)	{ mCharacterRoot->translate(direction * mPlayerRunSpeed * evt.timeSinceLastFrame, Node::TransformSpace::TS_LOCAL); }
 
-		if (offsetCamera.length() < 150.f || mCameraState == NORMAL)
+		if (offsetCamera.length() < 150.f )
 		{
 			mCameraHolder->translate(-direction * cameraDragSpeed * evt.timeSinceLastFrame);
 			offsetCamera += -direction * cameraDragSpeed * evt.timeSinceLastFrame;
@@ -107,15 +104,12 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 			if (offsetCamera.length() < minLength)
 			{
 				mCameraHolder->translate(-offsetCamera);
-				
-				//mCameraYaw->translate(-offsetCamera);
 				offsetCamera = Vector3::ZERO;
 			}
 			else
 			{
 				const Vector3 cameraMovDir = -1 * offsetCamera.normalisedCopy();
 				mCameraHolder->translate(cameraMovDir * cameraDragSpeed * evt.timeSinceLastFrame);
-				//mCameraYaw->translate(-cameraMovDir * cameraDragSpeed * evt.timeSinceLastFrame);
 				offsetCamera += cameraMovDir * cameraDragSpeed * evt.timeSinceLastFrame;
 			}
 		}
@@ -123,22 +117,24 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 
 	if (mCameraState == RIGHT_ROTATION)
 	{
+		//mCharacterRoot->yaw(Degree(-cameraDragSpeed * evt.timeSinceLastFrame));
 		mCameraYaw->yaw(Degree(-cameraDragSpeed * evt.timeSinceLastFrame));
-		//mCameraPitch->pitch(Degree());
-		//mCameraHolder->translate(Ogre::Vector3(0, 0, evt.timeSinceLastFrame * cameraDragSpeed));
+		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
+		const Vector3 direction = mCharacterDirection.normalisedCopy();
+		Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
+		mCharacterYaw->setOrientation(quat);
 	}
 	else if (mCameraState == LEFT_ROTATION)
 	{
+		//mCharacterRoot->yaw(Degree(cameraDragSpeed * evt.timeSinceLastFrame));
 		mCameraYaw->yaw(Degree(cameraDragSpeed * evt.timeSinceLastFrame));
-		//mCameraHolder->translate(Ogre::Vector3(0, 0, evt.timeSinceLastFrame * -cameraDragSpeed));
-		//mCameraHolder->translate(Ogre::Vector3(0, 0, evt.timeSinceLastFrame * -180.f));
+		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
+		const Vector3 direction = mCharacterDirection.normalisedCopy();
+		Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
+		mCharacterYaw->setOrientation(quat);
 	}
 	else if (mCameraState == NORMAL)
 	{ 
-		//const Vector3 direction = mCharacterDirection.normalisedCopy();
-		//mCameraHolder->translate(-direction * cameraDragSpeed * evt.timeSinceLastFrame);
-		//mCameraHolder->translate(Ogre::Vector3(Vector3::UNIT_Z));
-		
 	}
 	return true;
 }
