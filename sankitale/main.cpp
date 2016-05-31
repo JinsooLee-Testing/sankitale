@@ -4,7 +4,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
 #endif
-#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console" )
+//#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console" )
 
 
 

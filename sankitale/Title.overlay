@@ -5,14 +5,14 @@ Overlay/Title
 	{
 		container Panel(TitleLOGO)
 		{
-		  metrics_mode relative
+		  metrics_mode pixels
 		  vert_align center
 		  horz_align center
-		  top -0.2
-		  left -0.15
-		  height 0.4
-		  width 0.3
-		  material KPU_LOGO2
+		  top -400
+		  left -500
+		  height 800
+		  width 1024
+		  material TITLE
 		}
 		
 	  element TextArea(StartMsg)

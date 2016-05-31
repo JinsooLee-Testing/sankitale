@@ -31,7 +31,7 @@ private:
 	void _drawGroundPlane(void);
 	void _drawGridPlane(void);
 
-
+	bool mContinue;
 	static PlayState mPlayState;
 
 	Ogre::Root *mRoot;
