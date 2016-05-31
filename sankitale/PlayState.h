@@ -46,10 +46,13 @@ private:
 	Ogre::SceneNode* mCameraHolder;
 	Ogre::SceneNode* mCameraYaw;
 	Ogre::SceneNode* mCameraPitch;
+	Ogre::SceneNode* mSavePointRoot;
 
 	
 	Ogre::Vector3 mCharacterDirection;
 	Ogre::Entity* mCharacterEntity;
+	Ogre::Entity* mSavePointEntity;
+	
 
 	Ogre::AnimationState* mAnimationState;
 

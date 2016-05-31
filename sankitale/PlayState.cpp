@@ -9,6 +9,7 @@ PlayState PlayState::mPlayState;
 
 void PlayState::enter(void)
 {
+	mContinue = true;
 	mRoot = Root::getSingletonPtr();
 	mRoot->getAutoCreatedWindow()->resetStatistics();
 
@@ -23,6 +24,7 @@ void PlayState::enter(void)
 	mInformationOverlay = OverlayManager::getSingleton().getByName("Overlay/Information");
 	mInformationOverlay->show();
 
+	
 	mCharacterRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("ProfessorRoot");
 	mCharacterYaw = mCharacterRoot->createChildSceneNode("ProfessorYaw");
 
@@ -45,6 +47,12 @@ void PlayState::enter(void)
 	mAnimationState->setLoop(true);
 	mAnimationState->setEnabled(true);
 
+	mSavePointRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("SaveRoot",Vector3(0.0f,10.0f,100.0f));
+
+	mSavePointEntity = mSceneMgr->createEntity("Save", "save002.mesh");
+	mSavePointEntity->setCastShadows(true);
+	
+	mSavePointRoot->setPosition(Vector3(0.0f, 10.0f, 100.0f));
 
 }
 
@@ -70,6 +78,10 @@ void PlayState::resume(void)
 
 bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 {
+	mInformationOverlay =
+		OverlayManager::getSingleton().getByName("Overlay/Information");
+	mInformationOverlay->show();
+
 	mAnimationState->addTime(evt.timeSinceLastFrame);
 	static Vector3 offsetCamera = Vector3::ZERO;
 	static const float cameraDragSpeed = 100.f;
@@ -135,27 +147,30 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 		mAnimationState->setLoop(true);
 		mAnimationState->setEnabled(true);
 	}
-	return true;
+	return mContinue;
 }
 
 bool PlayState::frameEnded(GameManager* game, const FrameEvent& evt)
 {
-#if 0
+//#if 0
 	static Ogre::DisplayString currFps = L"현재 FPS: ";
 	static Ogre::DisplayString avgFps = L"평균 FPS: ";
 	static Ogre::DisplayString bestFps = L"최고 FPS: ";
 	static Ogre::DisplayString worstFps = L"최저 FPS: ";
+	static Ogre::DisplayString position = L"Position: ";
 	OverlayElement* guiAvg = OverlayManager::getSingleton().getOverlayElement("AverageFps");
 	OverlayElement* guiCurr = OverlayManager::getSingleton().getOverlayElement("CurrFps");
 	OverlayElement* guiBest = OverlayManager::getSingleton().getOverlayElement("BestFps");
 	OverlayElement* guiWorst = OverlayManager::getSingleton().getOverlayElement("WorstFps");
+	OverlayElement* guiPos = OverlayManager::getSingleton().getOverlayElement("PlayerPos");
 	const RenderTarget::FrameStats& stats = mRoot->getAutoCreatedWindow()->getStatistics();
 	guiAvg->setCaption(avgFps + StringConverter::toString(stats.avgFPS));
 	guiCurr->setCaption(currFps + StringConverter::toString(stats.lastFPS));
 	guiBest->setCaption(bestFps + StringConverter::toString(stats.bestFPS));
 	guiWorst->setCaption(worstFps + StringConverter::toString(stats.worstFPS));
-#endif
-	return true;
+	guiPos->setCaption(position + StringConverter::toString(mCharacterDirection));
+//#endif
+	return mContinue;
 }
 
 
@@ -167,6 +182,8 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	{
 	case OIS::KC_UP:case OIS::KC_W:
 	{mPlayerState = WALK;mCharacterDirection.z += -1.f;	}break;
+	case OIS::KC_DOWN:case OIS::KC_S:
+	{mPlayerState = WALK; mCharacterDirection.z += 1.f;	}break;
 	case OIS::KC_LEFT: case OIS::KC_A:
 	{mPlayerState = WALK;mCharacterDirection.x += -1.f;}break;
 	case OIS::KC_RIGHT: case OIS::KC_D:
@@ -174,7 +191,8 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	case OIS::KC_LSHIFT:
 		if (WALK == mPlayerState){mPlayerState = RUN;}break;
 	case OIS::KC_ESCAPE:
-		game->changeState(TitleState::getInstance());
+		mContinue = false;
+		//game->changeState(TitleState::getInstance());
 		break;
 	}
 	// -----------------------------------------------------
@@ -187,6 +205,8 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 	{
 	case OIS::KC_UP: case OIS::KC_W:
 		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.z -= -1.f; }break;
+	case OIS::KC_DOWN:case OIS::KC_S:
+		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.z -= 1.f; }break;
 	case OIS::KC_LEFT: case OIS::KC_A:
 		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.x -= -1.f; }break;
 	case OIS::KC_RIGHT: case OIS::KC_D:
@@ -236,15 +256,15 @@ void PlayState::_drawGroundPlane(void)
 		"Ground",
 		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		plane,
-		500, 500,
+		2000, 2000,
 		1, 1,
-		true, 1, 5, 5,
+		true, 1, 1, 1,
 		Vector3::NEGATIVE_UNIT_Z
 		);
 
 	Entity* groundEntity = mSceneMgr->createEntity("GroundPlane", "Ground");
 	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(groundEntity);
-	groundEntity->setMaterialName("KPU_LOGO");
+	groundEntity->setMaterialName("ruin_first");
 	groundEntity->setCastShadows(false);
 }
 

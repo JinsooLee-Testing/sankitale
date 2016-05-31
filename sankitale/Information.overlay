@@ -8,9 +8,9 @@ Overlay/Information
         vert_align bottom
         horz_align left
         left 5 
-        top -80
+        top -100
         width 160
-        height 75
+        height 85
 		material Information
 
         element TextArea(CurrFps)
@@ -62,6 +62,19 @@ Overlay/Information
             font_name Font/NanumBold18
             char_height 18
             caption BEST FPS:
+            colour_top 0.7 0.7 0.7
+            colour_bottom 0.7 0.7 0.7
+        }
+		element TextArea(PlayerPos)
+        {
+            metrics_mode pixels
+            left 5
+            top 70
+            width 90
+            height 30
+            font_name Font/NanumBold18
+            char_height 18
+            caption Position:
             colour_top 0.7 0.7 0.7
             colour_bottom 0.7 0.7 0.7
         }
