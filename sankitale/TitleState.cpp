@@ -9,6 +9,7 @@ TitleState TitleState::mTitleState;
 
 void TitleState::enter(void)
 {
+  
   mContinue = true;
   mTitleOverlay = OverlayManager::getSingleton().getByName("Overlay/Title");
   mStartMsg = OverlayManager::getSingleton().getOverlayElement("StartMsg");
@@ -37,13 +38,14 @@ bool TitleState::frameStarted(GameManager* game, const FrameEvent& evt)
 
   elapsed += evt.timeSinceLastFrame;
 
-  if ((int)(elapsed * 4) % 2)
+  if (elapsed >= 5.0f)
   {
-    mStartMsg->show();
+	  game->changeState(PlayState::getInstance());
+    //mStartMsg->show();
   }
   else
   {
-    mStartMsg->hide();
+    //mStartMsg->hide();
   }
 
   return true;
@@ -59,11 +61,12 @@ bool TitleState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
   // Fill Here -------------------------------------------------------
 	switch (e.key)
 	{
-	case OIS::KC_SPACE:
-		game->changeState(PlayState::getInstance());
-		break;
+	
 	case OIS::KC_ESCAPE:
 		mContinue = false;
+		break;
+	default:
+		game->changeState(PlayState::getInstance());
 		break;
 	}
   // -----------------------------------------------------------------

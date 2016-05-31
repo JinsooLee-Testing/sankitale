@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameState.h"
-
+using namespace std::chrono;
 class TitleState : public GameState
 {
 public:
@@ -33,4 +33,6 @@ private:
 
   Ogre::Overlay* mTitleOverlay;
   Ogre::OverlayElement* mStartMsg;
+  //std::chrono::time_point<std::chrono::steady_clock> startTimer;
+  //std::chrono::time_point<std::chrono::steady_clock> endTimer;
 };
