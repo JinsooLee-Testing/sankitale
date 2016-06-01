@@ -60,14 +60,18 @@ private:
 	int mPlayerState;
 	int mCameraState;
 	int mStatusState;
+	int mStatusHeartState;
 	enum {RIGHT_ROTATION,LEFT_ROTATION,NORMAL};
 	enum  {IDLE,WALK,RUN};
 	enum{STATUSOVERLAY,PLAY};
+	enum{SAVE,BACK};
 
 	Ogre::SceneNode* mSavePointRoot;
 	Ogre::Entity* mSavePointEntity;
 
 
 	Ogre::Overlay* mStatusOverlay;
+	Ogre::Overlay* mHeartOverlay;
+	//Ogre::Overlay* mBackHeartOverlay;
 	Ogre::OverlayElement* mStatusMsg;
 };

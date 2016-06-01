@@ -10,8 +10,9 @@ PlayState PlayState::mPlayState;
 void PlayState::enter(void)
 {
 	mStatusOverlay = OverlayManager::getSingleton().getByName("Overlay/Status");
+	mHeartOverlay = OverlayManager::getSingleton().getByName("Overlay/SaveHeart");
 	mStatusMsg = OverlayManager::getSingleton().getOverlayElement("IDMsg");
-
+	mStatusHeartState = SAVE;
 	mContinue = true;
 	mStatusState = PLAY;
 	mRoot = Root::getSingletonPtr();
@@ -31,14 +32,16 @@ void PlayState::enter(void)
 	
 	mCharacterRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerRoot");
 	mCharacterYaw = mCharacterRoot->createChildSceneNode("PlayerYaw");
-	//mCharacterRoot->setScale(Vector3(10.0f, 0.0f, 10.0f));
+	//mCharacterYaw->yaw(Degree(180));
+	
+	mCharacterYaw->setScale(Vector3(10.0f, 10.0f, 10.0f));
 	mCameraYaw = mCharacterRoot->createChildSceneNode("CameraYaw", Vector3(0.0f, 120.0f, 0.0f));
 	mCameraPitch = mCameraYaw->createChildSceneNode("CameraPitch");
 	mCameraHolder = mCameraPitch->createChildSceneNode("CameraHolder", Vector3(0.0f, 80.0f, 500.0f));
 
-	mCharacterEntity = mSceneMgr->createEntity("Player", "save002.mesh");
+	mCharacterEntity = mSceneMgr->createEntity("Player", "fish.mesh");
 	mCharacterYaw->attachObject(mCharacterEntity);
-	mCharacterYaw->setScale(1000.0f, 1000.0f, 1000.0f);
+	//mCharacterYaw->setScale(1000.0f, 1000.0f, 1000.0f);
 	mCharacterEntity->setCastShadows(true);
 
 	mCameraHolder->attachObject(mCamera);
@@ -82,6 +85,9 @@ void PlayState::exit(void)
 void PlayState::pause(void)
 {
 	//_drawStatusPlane();
+	mHeartOverlay->show();
+	//if (mStatusHeartState == SAVE)	{ mBackHeartOverlay->show();   }
+	//else if (mStatusHeartState == BACK)	{ mSaveHeartOverlay->show(); }
 	mStatusOverlay->show();
 	mStatusMsg->show();
 	mEnemyAnimState->setLoop(false);
@@ -90,6 +96,9 @@ void PlayState::pause(void)
 
 void PlayState::resume(void)
 {
+	mHeartOverlay->hide();
+	/*mBackHeartOverlay->hide();  
+	mSaveHeartOverlay->hide(); */
 	mStatusOverlay->hide();
 	mStatusMsg->hide();
 	mEnemyAnimState->setLoop(true);
@@ -110,6 +119,12 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 	// Fill Here -------------------------------------------------------------------
 	if (mCharacterDirection != Vector3::ZERO)
 	{
+		/*if (!mRunState->getEnabled())
+		{
+			mRunState->setEnabled(true);
+			mIdleState->setEnabled(false);
+		}*/
+		//mRunState->addTime(evt.timeSinceLastFrame);
 
 		static const float mCharacterSpeed = 400.f;
 
@@ -129,6 +144,12 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 	}
 	else
 	{
+		/*if (!mIdleState->getEnabled())
+		{
+			mIdleState->setEnabled(true);
+			mRunState->setEnabled(false);
+		}*/
+		//mIdleState->addTime(evt.timeSinceLastFrame);
 
 		if (offsetCamera.length() > 0)
 		{
@@ -202,18 +223,22 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	{
 		switch (e.key)
 		{
-		case OIS::KC_UP:case OIS::KC_W:
-		{mPlayerState = WALK;
-		mCharacterDirection.z += -1.f;	}break;
-		case OIS::KC_DOWN:case OIS::KC_S:
-		{mPlayerState = WALK; mCharacterDirection.z += 1.f;	}break;
-		case OIS::KC_LEFT: case OIS::KC_A:
-		{mPlayerState = WALK; mCharacterDirection.x += -1.f; }break;
-		case OIS::KC_RIGHT: case OIS::KC_D:
-		{mPlayerState = WALK; mCharacterDirection.x += 1.f; }break;
-		case OIS::KC_LSHIFT:
-			//if (WALK == mPlayerState)
-		{mPlayerState = RUN; }break;
+		case OIS::KC_W: case OIS::KC_UP:    mCharacterDirection.z += -1.f; break;
+		case OIS::KC_S: case OIS::KC_DOWN:  mCharacterDirection.z += 1.f; break;
+		case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x += -1.f; break;
+		case OIS::KC_D: case OIS::KC_RIGHT: mCharacterDirection.x += 1.f; break;
+		//case OIS::KC_UP:case OIS::KC_W:
+		//{mPlayerState = WALK;
+		//mCharacterDirection.z += -1.f;	}break;
+		//case OIS::KC_DOWN:case OIS::KC_S:
+		//{mPlayerState = WALK; mCharacterDirection.z += 1.f;	}break;
+		//case OIS::KC_LEFT: case OIS::KC_A:
+		//{mPlayerState = WALK; mCharacterDirection.x += -1.f; }break;
+		//case OIS::KC_RIGHT: case OIS::KC_D:
+		//{mPlayerState = WALK; mCharacterDirection.x += 1.f; }break;
+		//case OIS::KC_LSHIFT:
+		//	//if (WALK == mPlayerState)
+		//{mPlayerState = RUN; }break;
 		case OIS::KC_ESCAPE:
 			mContinue = false;
 			//game->changeState(TitleState::getInstance());
@@ -230,6 +255,21 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	{
 		switch (e.key)
 		{
+		case OIS::KC_LEFT:
+		{
+			if (mStatusHeartState == SAVE)	{ 
+				
+				mStatusHeartState = BACK; }
+			else if (mStatusHeartState == BACK)	{ mStatusHeartState = SAVE; }
+
+		}
+		break;
+		case OIS::KC_RIGHT:
+		{
+			if (mStatusHeartState == SAVE)	{ mStatusHeartState = BACK; }
+			else if (mStatusHeartState == BACK)	{ mStatusHeartState = SAVE; }
+		}
+		break;
 		case OIS::KC_X:
 			resume();
 			mStatusState = PLAY;
@@ -246,20 +286,27 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 
 bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 {
-	switch (e.key)
-	{
-	case OIS::KC_UP: case OIS::KC_W:
-		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.z -= -1.f; }break;
-	case OIS::KC_DOWN:case OIS::KC_S:
-		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.z -= 1.f; }break;
-	case OIS::KC_LEFT: case OIS::KC_A:
-		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.x -= -1.f; }break;
-	case OIS::KC_RIGHT: case OIS::KC_D:
-		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.x -= 1.f; }break;
-	case OIS::KC_LSHIFT:
-		//if (RUN == mPlayerState)
-	{ mPlayerState = WALK; }break;
+	if (PLAY == mStatusState){
+		switch (e.key)
+		{
+		case OIS::KC_W: case OIS::KC_UP:    mCharacterDirection.z -= -1.f; break;
+		case OIS::KC_S: case OIS::KC_DOWN:  mCharacterDirection.z -= 1.f; break;
+		case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x -= -1.f; break;
+		case OIS::KC_D: case OIS::KC_RIGHT: mCharacterDirection.x -= 1.f; break;
+		}
 	}
+	//case OIS::KC_UP: case OIS::KC_W:
+	//	if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.z -= -1.f; }break;
+	//case OIS::KC_DOWN:case OIS::KC_S:
+	//	if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.z -= 1.f; }break;
+	//case OIS::KC_LEFT: case OIS::KC_A:
+	//	if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.x -= -1.f; }break;
+	//case OIS::KC_RIGHT: case OIS::KC_D:
+	//	if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.x -= 1.f; }break;
+	//case OIS::KC_LSHIFT:
+	//	//if (RUN == mPlayerState)
+	//{ mPlayerState = WALK; }break;
+	//}
 	return true;
 }
 bool PlayState::mousePressed(GameManager* game, const OIS::MouseEvent &e, OIS::MouseButtonID id)
