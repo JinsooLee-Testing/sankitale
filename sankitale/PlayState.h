@@ -30,7 +30,7 @@ private:
 	void _setLights(void);
 	void _drawGroundPlane(void);
 	void _drawGridPlane(void);
-
+	void _drawStatusPlane(void);
 	bool mContinue;
 	static PlayState mPlayState;
 
@@ -46,19 +46,28 @@ private:
 	Ogre::SceneNode* mCameraHolder;
 	Ogre::SceneNode* mCameraYaw;
 	Ogre::SceneNode* mCameraPitch;
-	Ogre::SceneNode* mSavePointRoot;
+	
 
 	
 	Ogre::Vector3 mCharacterDirection;
 	Ogre::Entity* mCharacterEntity;
-	Ogre::Entity* mSavePointEntity;
+	
 	
 
 	Ogre::AnimationState* mAnimationState;
-
+	Ogre::AnimationState* mEnemyAnimState;
 	Ogre::Overlay*           mInformationOverlay;
 	int mPlayerState;
 	int mCameraState;
+	int mStatusState;
 	enum {RIGHT_ROTATION,LEFT_ROTATION,NORMAL};
 	enum  {IDLE,WALK,RUN};
+	enum{STATUSOVERLAY,PLAY};
+
+	Ogre::SceneNode* mSavePointRoot;
+	Ogre::Entity* mSavePointEntity;
+
+
+	Ogre::Overlay* mStatusOverlay;
+	Ogre::OverlayElement* mStatusMsg;
 };

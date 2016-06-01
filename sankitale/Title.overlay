@@ -14,7 +14,7 @@ Overlay/Title
 		  width 1024
 		  material TITLE
 		}
-		
+	zorder 200	
 	  element TextArea(StartMsg)
     {
       metrics_mode relative

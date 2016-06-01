@@ -9,7 +9,11 @@ PlayState PlayState::mPlayState;
 
 void PlayState::enter(void)
 {
+	mStatusOverlay = OverlayManager::getSingleton().getByName("Overlay/Status");
+	mStatusMsg = OverlayManager::getSingleton().getOverlayElement("IDMsg");
+
 	mContinue = true;
+	mStatusState = PLAY;
 	mRoot = Root::getSingletonPtr();
 	mRoot->getAutoCreatedWindow()->resetStatistics();
 
@@ -25,15 +29,16 @@ void PlayState::enter(void)
 	mInformationOverlay->show();
 
 	
-	mCharacterRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("ProfessorRoot");
-	mCharacterYaw = mCharacterRoot->createChildSceneNode("ProfessorYaw");
-
+	mCharacterRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerRoot");
+	mCharacterYaw = mCharacterRoot->createChildSceneNode("PlayerYaw");
+	//mCharacterRoot->setScale(Vector3(10.0f, 0.0f, 10.0f));
 	mCameraYaw = mCharacterRoot->createChildSceneNode("CameraYaw", Vector3(0.0f, 120.0f, 0.0f));
 	mCameraPitch = mCameraYaw->createChildSceneNode("CameraPitch");
 	mCameraHolder = mCameraPitch->createChildSceneNode("CameraHolder", Vector3(0.0f, 80.0f, 500.0f));
 
-	mCharacterEntity = mSceneMgr->createEntity("Professor", "DustinBody.mesh");
+	mCharacterEntity = mSceneMgr->createEntity("Player", "save002.mesh");
 	mCharacterYaw->attachObject(mCharacterEntity);
+	mCharacterYaw->setScale(1000.0f, 1000.0f, 1000.0f);
 	mCharacterEntity->setCastShadows(true);
 
 	mCameraHolder->attachObject(mCamera);
@@ -41,24 +46,34 @@ void PlayState::enter(void)
 
 	mCharacterDirection = Ogre::Vector3::ZERO;
 
-	mAnimationState = mCharacterEntity->getAnimationState("Idle");
-	mPlayerState = IDLE;
-	mCameraState = NORMAL;
-	mAnimationState->setLoop(true);
-	mAnimationState->setEnabled(true);
+	//mAnimationState = mCharacterEntity->getAnimationState("Idle");
+	//mPlayerState = IDLE;
+	//mCameraState = NORMAL;
+	//mAnimationState->setLoop(true);
+	//mAnimationState->setEnabled(true);
 
-	mSavePointRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("SaveRoot",Vector3(0.0f,10.0f,100.0f));
+	mSavePointRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("ProfessorRoot");
 
-	mSavePointEntity = mSceneMgr->createEntity("Save", "save002.mesh");
-	mSavePointEntity->setCastShadows(true);
+	mSavePointEntity = mSceneMgr->createEntity("Professor", "DustinBody.mesh");
+	mSavePointRoot->attachObject(mSavePointEntity);
+	mSavePointRoot->setPosition(Vector3(150.f, 0.0f, 150.f));
+	mEnemyAnimState = mSavePointEntity->getAnimationState("Lift");
+	mEnemyAnimState->setLoop(true);
+	mEnemyAnimState->setEnabled(true);
+	//mSavePointRoot->setScale(Vector3(500.0f, 500.0f, 500.f));
+	//mSavePointRoot->attachObject(mSavePointEntity);
+	//mSavePointEntity->setCastShadows(true);
+	//mSavePointRoot->setPosition(Vector3(10.0f, 10.0f, 10.0f));
+	//mSavePointRoot->setScale(Vector3(155.0f, 155.0f, 155.0f));
 	
-	mSavePointRoot->setPosition(Vector3(0.0f, 10.0f, 100.0f));
+	//setPosition(Vector3(0.0f, 10.0f, 100.0f));
 
 }
 
 void PlayState::exit(void)
 {
 	// Fill Here -----------------------------
+
 	mSceneMgr->clearScene();
 	mInformationOverlay->hide();
 	// ---------------------------------------
@@ -66,14 +81,19 @@ void PlayState::exit(void)
 
 void PlayState::pause(void)
 {
-	mAnimationState->setLoop(false);
-	mAnimationState->setEnabled(false);
+	//_drawStatusPlane();
+	mStatusOverlay->show();
+	mStatusMsg->show();
+	mEnemyAnimState->setLoop(false);
+	mEnemyAnimState->setEnabled(false);
 }
 
 void PlayState::resume(void)
 {
-	mAnimationState->setLoop(true);
-	mAnimationState->setEnabled(true);
+	mStatusOverlay->hide();
+	mStatusMsg->hide();
+	mEnemyAnimState->setLoop(true);
+	mEnemyAnimState->setEnabled(true);
 }
 
 bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
@@ -82,7 +102,8 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 		OverlayManager::getSingleton().getByName("Overlay/Information");
 	mInformationOverlay->show();
 
-	mAnimationState->addTime(evt.timeSinceLastFrame);
+	/*mAnimationState->addTime(evt.timeSinceLastFrame);*/
+	mEnemyAnimState->addTime(evt.timeSinceLastFrame);
 	static Vector3 offsetCamera = Vector3::ZERO;
 	static const float cameraDragSpeed = 100.f;
 
@@ -126,27 +147,27 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 		}
 	}
 
-	if (WALK == mPlayerState)
-	{
-		mAnimationState->setEnabled(false);
-		mAnimationState = mCharacterEntity->getAnimationState("Walk");
-		mAnimationState->setLoop(true);
-		mAnimationState->setEnabled(true);
-	}
-	else if (RUN == mPlayerState)
-	{
-		mAnimationState->setEnabled(false);
-		mAnimationState = mCharacterEntity->getAnimationState("Run");
-		mAnimationState->setLoop(true);
-		mAnimationState->setEnabled(true);
-	}
-	else if (IDLE == mPlayerState)
-	{
-		mAnimationState->setEnabled(false);
-		mAnimationState = mCharacterEntity->getAnimationState("Idle");
-		mAnimationState->setLoop(true);
-		mAnimationState->setEnabled(true);
-	}
+	//if (WALK == mPlayerState)
+	//{
+	//	mAnimationState->setEnabled(false);
+	//	//mAnimationState = mCharacterEntity->getAnimationState("Walk");
+	//	mAnimationState->setLoop(true);
+	//	mAnimationState->setEnabled(true);
+	//}
+	//else if (RUN == mPlayerState)
+	//{
+	//	mAnimationState->setEnabled(false);
+	//	//mAnimationState = mCharacterEntity->getAnimationState("Run");
+	//	mAnimationState->setLoop(true);
+	//	mAnimationState->setEnabled(true);
+	//}
+	//else if (IDLE == mPlayerState)
+	//{
+	//	mAnimationState->setEnabled(false);
+	//	mAnimationState = mCharacterEntity->getAnimationState("Idle");
+	//	mAnimationState->setLoop(true);
+	//	mAnimationState->setEnabled(true);
+	//}
 	return mContinue;
 }
 
@@ -168,7 +189,7 @@ bool PlayState::frameEnded(GameManager* game, const FrameEvent& evt)
 	guiCurr->setCaption(currFps + StringConverter::toString(stats.lastFPS));
 	guiBest->setCaption(bestFps + StringConverter::toString(stats.bestFPS));
 	guiWorst->setCaption(worstFps + StringConverter::toString(stats.worstFPS));
-	guiPos->setCaption(position + StringConverter::toString(mCharacterDirection));
+	guiPos->setCaption(position + StringConverter::toString(mCharacterRoot->getPosition()));
 //#endif
 	return mContinue;
 }
@@ -177,23 +198,47 @@ bool PlayState::frameEnded(GameManager* game, const FrameEvent& evt)
 bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 {
 	// Fill Here -------------------------------------------
-	
-	switch (e.key)
+	if (PLAY == mStatusState)
 	{
-	case OIS::KC_UP:case OIS::KC_W:
-	{mPlayerState = WALK;mCharacterDirection.z += -1.f;	}break;
-	case OIS::KC_DOWN:case OIS::KC_S:
-	{mPlayerState = WALK; mCharacterDirection.z += 1.f;	}break;
-	case OIS::KC_LEFT: case OIS::KC_A:
-	{mPlayerState = WALK;mCharacterDirection.x += -1.f;}break;
-	case OIS::KC_RIGHT: case OIS::KC_D:
-	{mPlayerState = WALK;mCharacterDirection.x += 1.f;}break;
-	case OIS::KC_LSHIFT:
-		if (WALK == mPlayerState){mPlayerState = RUN;}break;
-	case OIS::KC_ESCAPE:
-		mContinue = false;
-		//game->changeState(TitleState::getInstance());
-		break;
+		switch (e.key)
+		{
+		case OIS::KC_UP:case OIS::KC_W:
+		{mPlayerState = WALK;
+		mCharacterDirection.z += -1.f;	}break;
+		case OIS::KC_DOWN:case OIS::KC_S:
+		{mPlayerState = WALK; mCharacterDirection.z += 1.f;	}break;
+		case OIS::KC_LEFT: case OIS::KC_A:
+		{mPlayerState = WALK; mCharacterDirection.x += -1.f; }break;
+		case OIS::KC_RIGHT: case OIS::KC_D:
+		{mPlayerState = WALK; mCharacterDirection.x += 1.f; }break;
+		case OIS::KC_LSHIFT:
+			//if (WALK == mPlayerState)
+		{mPlayerState = RUN; }break;
+		case OIS::KC_ESCAPE:
+			mContinue = false;
+			//game->changeState(TitleState::getInstance());
+			break;
+		case OIS::KC_X:
+				pause();
+				mStatusState = STATUSOVERLAY;
+
+			break;
+
+		}
+	}
+	else if (STATUSOVERLAY == mStatusState)
+	{
+		switch (e.key)
+		{
+		case OIS::KC_X:
+			resume();
+			mStatusState = PLAY;
+			break;
+		case OIS::KC_ESCAPE:
+			mContinue = false;
+			break;
+		}
+		
 	}
 	// -----------------------------------------------------
 	return true;
@@ -210,9 +255,10 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 	case OIS::KC_LEFT: case OIS::KC_A:
 		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.x -= -1.f; }break;
 	case OIS::KC_RIGHT: case OIS::KC_D:
-		if (WALK == mPlayerState || RUN == mPlayerState){mPlayerState = IDLE;mCharacterDirection.x -= 1.f;}break;
+		if (WALK == mPlayerState || RUN == mPlayerState){ mPlayerState = IDLE; mCharacterDirection.x -= 1.f; }break;
 	case OIS::KC_LSHIFT:
-		if (RUN == mPlayerState){ mPlayerState = WALK; }break;
+		//if (RUN == mPlayerState)
+	{ mPlayerState = WALK; }break;
 	}
 	return true;
 }
@@ -229,14 +275,37 @@ bool PlayState::mouseReleased(GameManager* game, const OIS::MouseEvent &e, OIS::
 
 bool PlayState::mouseMoved(GameManager* game, const OIS::MouseEvent &e)
 {
-	mCameraYaw->yaw(Degree(-e.state.X.rel));
-	mCameraPitch->pitch(Degree(-e.state.Y.rel));
+	if (PLAY == mStatusState)
+	{
+		mCameraYaw->yaw(Degree(-e.state.X.rel));
+		mCameraPitch->pitch(Degree(-e.state.Y.rel));
 
-	mCameraHolder->translate(Ogre::Vector3(0, 0, -e.state.Z.rel * 0.1f));
+		mCameraHolder->translate(Ogre::Vector3(0, 0, -e.state.Z.rel * 0.1f));
+	}
 	return true;
 }
 
+void PlayState::_drawStatusPlane(void)
+{
+	
+	
+	
+	/*Plane plane(Vector3::UNIT_Y, 0);
+	MeshManager::getSingleton().createPlane(
+		"Ground",
+		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		plane,
+		2000, 2000,
+		1, 1,
+		true, 1, 1, 1,
+		Vector3::NEGATIVE_UNIT_Z
+		);
 
+	Entity* groundEntity = mSceneMgr->createEntity("GroundPlane", "Ground");
+	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(groundEntity);
+	groundEntity->setMaterialName("ruin_first");
+	groundEntity->setCastShadows(false);*/
+}
 
 void PlayState::_setLights(void)
 {

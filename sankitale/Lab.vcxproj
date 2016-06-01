@@ -257,6 +257,9 @@
     <ClInclude Include="PlayState.h" />
     <ClInclude Include="TitleState.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Status.overlay" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
