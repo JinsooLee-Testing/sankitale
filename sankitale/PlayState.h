@@ -23,7 +23,7 @@ public:
 
 	static PlayState* getInstance() { return &mPlayState; }
 
-	void setAnimState(Ogre::AnimationState* anim) { mRunAnimState = anim; }
+	void setAnimState(Ogre::AnimationState* anim) { mAnimatonState = anim; }
 	void camerarotate();
 private:
 
@@ -49,11 +49,14 @@ private:
 
 	Ogre::Entity* mCharacterEntity;
 
-	Ogre::AnimationState* mRunAnimState;
+	Ogre::AnimationState* mAnimatonState;
+	//Ogre::AnimationState* mIdleAnimState;
 
 	Ogre::Overlay*           mInformationOverlay;
 
 	bool mContinue;
 	enum{LEFT_ROTATE,RIGHT_ROTATE,NORMAL};
 	short mCharacterRotateState;
+	enum{IDLE,WALK};
+	short mCharacterAnimState;
 };

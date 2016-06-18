@@ -9,6 +9,7 @@ PlayState PlayState::mPlayState;
 
 void PlayState::enter(void)
 {
+	mCharacterAnimState = IDLE;
 	mCharacterRotateState = NORMAL;
 	mContinue = true;
 	mRoot = Root::getSingletonPtr();
@@ -32,7 +33,7 @@ void PlayState::enter(void)
 
 	mCameraYaw = mCharacterRoot->createChildSceneNode("CameraYaw", Vector3(0.0f, 120.0f, 0.0f));
 	mCameraPitch = mCameraYaw->createChildSceneNode("CameraPitch");
-	mCameraHolder = mCameraPitch->createChildSceneNode("CameraHolder", Vector3(0.0f, 80.0f, 500.0f));
+	mCameraHolder = mCameraPitch->createChildSceneNode("CameraHolder", Vector3(0.0f, 80.0f, -500.0f));
 
 	mCharacterEntity = mSceneMgr->createEntity("Professor", "DustinBody.mesh");
 	mCharacterYaw->attachObject(mCharacterEntity);
@@ -41,9 +42,9 @@ void PlayState::enter(void)
 	mCameraHolder->attachObject(mCamera);
 	mCamera->lookAt(mCameraYaw->getPosition());
 
-	mRunAnimState = mCharacterEntity->getAnimationState("Run");
-	mRunAnimState->setLoop(true);
-	mRunAnimState->setEnabled(true);
+	mAnimatonState = mCharacterEntity->getAnimationState("Idle");
+	mAnimatonState->setLoop(true);
+	mAnimatonState->setEnabled(true);
 }
 
 void PlayState::exit(void)
@@ -58,74 +59,104 @@ void PlayState::pause(void)
 {
 	//	mAnimationState = mCharacterEntity->getA
 	//	mAnimationState = mCharacterEntity->getAnimationState("Run");
-	mRunAnimState->setLoop(false);
-	mRunAnimState->setEnabled(false);
+	//mRunAnimState->setLoop(false);
+	//mRunAnimState->setEnabled(false);
 }
 
 void PlayState::resume(void)
 {
 	//	mAnimationState = mCharacterEntity->Anima`
-	mRunAnimState->setLoop(true);
-	mRunAnimState->setEnabled(true);
+	//mRunAnimState->setLoop(true);
+	//mRunAnimState->setEnabled(true);
 }
 
 bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 {
-	mRunAnimState->addTime(evt.timeSinceLastFrame);
+	mAnimatonState->addTime(evt.timeSinceLastFrame);
+
 	static Vector3 offsetCamera = Vector3::ZERO;
 	static const float cameraDragSpeed = 100.f;
+
+	static const float mCharacterSpeed = 400.f;
 	camerarotate();
+	//static Vector3 offsetCamera = Vector3::ZERO;
+	//static const float cameraDragSpeed = 100.f;
+	if (mCharacterAnimState = WALK)
+	{
+		if (mCharacterDirection != Vector3::ZERO)
+		{
+			
+			const Vector3 direction = mCharacterDirection.normalisedCopy();
+			mCharacterRoot->translate(direction * mCharacterSpeed * evt.timeSinceLastFrame, Node::TS_PARENT);
+			//Node::TransformSpace::TS_LOCAL);
+		}
+	}
+	//mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
+	//const Vector3 direction = mCharacterDirection.normalisedCopy();
+	//Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
+	//mCharacterYaw->setOrientation(quat);
+	//mCameraYaw->setOrientation(quat);
+	//mCharacterRoot->translate(direction * 400.f,
+	//	Node::TransformSpace::TS_LOCAL);
+	/*mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
+	const Vector3 direction = mCharacterDirection.normalisedCopy();
+	Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
+	mCharacterYaw->setOrientation(quat);
+
+	mCharacterRoot->translate(direction * mCharacterSpeed * evt.timeSinceLastFrame,
+		Node::TransformSpace::TS_LOCAL);*/
+
 	// Fill Here -------------------------------------------------------------------
-	if (mCharacterDirection != Vector3::ZERO)
-	{
-		//if (!mRunState->getEnabled())
-		//{
-		//	mRunState->setEnabled(true);
-		//	mIdleState->setEnabled(false);
-		//}
-		//mRunState->addTime(evt.timeSinceLastFrame);
+	//if (mCharacterDirection != Vector3::ZERO)
+	//{
+	//	//if (!mRunState->getEnabled())
+	//	//{
+	//	//	mRunState->setEnabled(true);
+	//	//	mIdleState->setEnabled(false);
+	//	//}
+	//	//mRunState->addTime(evt.timeSinceLastFrame);
 
-		static const float mCharacterSpeed = 400.f;
+	//	static const float mCharacterSpeed = 400.f;
 
-		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
-		const Vector3 direction = mCharacterDirection.normalisedCopy();
-		Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
-		mCharacterYaw->setOrientation(quat);
+	//	mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
+	//	const Vector3 direction = mCharacterDirection.normalisedCopy();
+	//	Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
+	//	mCharacterYaw->setOrientation(quat);
 
-		mCharacterRoot->translate(direction * mCharacterSpeed * evt.timeSinceLastFrame,
-			Node::TransformSpace::TS_LOCAL);
+	//	mCharacterRoot->translate(direction * mCharacterSpeed * evt.timeSinceLastFrame,
+	//		Node::TransformSpace::TS_LOCAL);
 
-		if (offsetCamera.length() < 150.f)
-		{
-			mCameraHolder->translate(-direction * cameraDragSpeed * evt.timeSinceLastFrame);
-			offsetCamera += -direction * cameraDragSpeed * evt.timeSinceLastFrame;
-		}
-	}
-	else
-	{
-		//if (!mIdleState->getEnabled())
-		//{
-		//	mIdleState->setEnabled(true);
-		//	mRunState->setEnabled(false);
-		//}
-		//mIdleState->addTime(evt.timeSinceLastFrame);
+	//	if (offsetCamera.length() < 150.f)
+	//	{
+	//		mCameraHolder->translate(-direction * cameraDragSpeed * evt.timeSinceLastFrame);
+	//		offsetCamera += -direction * cameraDragSpeed * evt.timeSinceLastFrame;
+	//	}
+	//}
+	//else
+	//{
+	//	//if (!mIdleState->getEnabled())
+	//	//{
+	//	//	mIdleState->setEnabled(true);
+	//	//	mRunState->setEnabled(false);
+	//	//}
+	//	//mIdleState->addTime(evt.timeSinceLastFrame);
 
-		if (offsetCamera.length() > 0)
-		{
-			const static float minLength = 10.f;
-			if (offsetCamera.length() < minLength)
-			{
-				mCameraHolder->translate(-offsetCamera);
-				offsetCamera = Vector3::ZERO;
-			}
-			else
-			{
-				const Vector3 cameraMovDir = -1 * offsetCamera.normalisedCopy();
-				mCameraHolder->translate(cameraMovDir * cameraDragSpeed * evt.timeSinceLastFrame);
-				offsetCamera += cameraMovDir * cameraDragSpeed * evt.timeSinceLastFrame;
-			}
-		}
-	}
+	//	if (offsetCamera.length() > 0)
+	//	{
+	//		const static float minLength = 10.f;
+	//		if (offsetCamera.length() < minLength)
+	//		{
+	//			mCameraHolder->translate(-offsetCamera);
+	//			offsetCamera = Vector3::ZERO;
+	//		}
+	//		else
+	//		{
+	//			const Vector3 cameraMovDir = -1 * offsetCamera.normalisedCopy();
+	//			mCameraHolder->translate(cameraMovDir * cameraDragSpeed * evt.timeSinceLastFrame);
+	//			offsetCamera += cameraMovDir * cameraDragSpeed * evt.timeSinceLastFrame;
+	//		}
+	//	}
+	//}
 	return mContinue;
 }
 
@@ -154,10 +185,18 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 {
 	switch (e.key)
 	{
-	//case OIS::KC_W: case OIS::KC_UP:    mCharacterDirection.z -= -1.f; 
-	//case OIS::KC_S: case OIS::KC_DOWN:  mCharacterDirection.z -= 1.f; break;
+		
+	case OIS::KC_W: case OIS::KC_UP:
+		mCharacterAnimState = IDLE;
+		mAnimatonState = mCharacterEntity->getAnimationState("Idle");   
+		mCharacterDirection.z -= 1.f;
+		break;
+	case OIS::KC_S: case OIS::KC_DOWN: mCharacterAnimState = IDLE;
+		mAnimatonState = mCharacterEntity->getAnimationState("Idle");
+		mCharacterDirection.z -= -1.f;
+		break;
 	case OIS::KC_A: case OIS::KC_LEFT: mCharacterRotateState = NORMAL;  break;
-	//case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x -= -1.f; break;
+		//case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x -= -1.f; break;
 	case OIS::KC_D: case OIS::KC_RIGHT:  mCharacterRotateState = NORMAL; break;
 	case OIS::KC_ESCAPE: mContinue = false; break;
 	}
@@ -169,10 +208,19 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	// Fill Here -------------------------------------------
 	switch (e.key)
 	{
-	//case OIS::KC_W: case OIS::KC_UP:    mCharacterDirection.z += -1.f; break;
-	//case OIS::KC_S: case OIS::KC_DOWN:  mCharacterDirection.z += 1.f; break;
+		
+	case OIS::KC_W: case OIS::KC_UP:
+		mCharacterAnimState = WALK;
+		mAnimatonState = mCharacterEntity->getAnimationState("Walk");  
+		mCharacterDirection.z += 1.f;
+		break;
+	case OIS::KC_S: case OIS::KC_DOWN:
+		mCharacterAnimState = WALK;
+		mAnimatonState = mCharacterEntity->getAnimationState("Walk");  
+		mCharacterDirection.z += -1.f;
+		break;
 	case OIS::KC_A: case OIS::KC_LEFT: mCharacterRotateState = LEFT_ROTATE; break;
-	//case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x += -1.f; break;
+		//case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x += -1.f; break;
 	case OIS::KC_D: case OIS::KC_RIGHT: mCharacterRotateState = RIGHT_ROTATE; break;
 	case OIS::KC_ESCAPE: mContinue = false; break;
 	}
@@ -202,21 +250,32 @@ bool PlayState::mouseMoved(GameManager* game, const OIS::MouseEvent &e)
 
 void PlayState::camerarotate()
 {
-	if (LEFT_ROTATE == mCharacterRotateState)
+	if (RIGHT_ROTATE == mCharacterRotateState)
 	{
+
+		
 		mCameraYaw->rotate(Ogre::Vector3::UNIT_Y,
-			Ogre::Degree(-0.5f),
+			Ogre::Degree(-1.f),
+			Ogre::Node::TS_PARENT);
+		mCharacterYaw->rotate(Ogre::Vector3::UNIT_Y,
+			Ogre::Degree(-1.f),
 			Ogre::Node::TS_PARENT);
 	}
-	else if (RIGHT_ROTATE == mCharacterRotateState)
+	else if (LEFT_ROTATE == mCharacterRotateState)
 	{
 		mCameraYaw->rotate(Ogre::Vector3::UNIT_Y,
-			Ogre::Degree(0.5f),
+			Ogre::Degree(1.f),
+			Ogre::Node::TS_PARENT);
+		mCharacterYaw->rotate(Ogre::Vector3::UNIT_Y,
+			Ogre::Degree(1.f),
 			Ogre::Node::TS_PARENT);
 	}
 	else if (NORMAL == mCharacterRotateState)
 	{
 		mCameraYaw->rotate(Ogre::Vector3::UNIT_Y,
+			Ogre::Degree(0.f),
+			Ogre::Node::TS_PARENT);
+		mCharacterYaw->rotate(Ogre::Vector3::UNIT_Y,
 			Ogre::Degree(0.f),
 			Ogre::Node::TS_PARENT);
 	}
@@ -270,7 +329,7 @@ void PlayState::_drawGridPlane(void)
 	gridPlaneMaterial->getTechnique(0)->getPass(0)->setSelfIllumination(1, 1, 1);
 
 	gridPlane->begin("GridPlaneMaterial", Ogre::RenderOperation::OT_LINE_LIST);
-	for (int i = 0; i<21; i++)
+	for (int i = 0; i < 21; i++)
 	{
 		gridPlane->position(-500.0f, 0.0f, 500.0f - i * 50);
 		gridPlane->position(500.0f, 0.0f, 500.0f - i * 50);
