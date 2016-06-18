@@ -9,12 +9,12 @@ PlayState PlayState::mPlayState;
 
 void PlayState::enter(void)
 {
-	mStatusOverlay = OverlayManager::getSingleton().getByName("Overlay/Status");
+	/*mStatusOverlay = OverlayManager::getSingleton().getByName("Overlay/Status");
 	mHeartOverlay = OverlayManager::getSingleton().getByName("Overlay/SaveHeart");
 	mStatusMsg = OverlayManager::getSingleton().getOverlayElement("IDMsg");
 	mStatusHeartState = SAVE;
 	mContinue = true;
-	mStatusState = PLAY;
+	mStatusState = PLAY;*/
 	mRoot = Root::getSingletonPtr();
 	mRoot->getAutoCreatedWindow()->resetStatistics();
 
@@ -49,11 +49,7 @@ void PlayState::enter(void)
 
 	mCharacterDirection = Ogre::Vector3::ZERO;
 
-	//mAnimationState = mCharacterEntity->getAnimationState("Idle");
-	//mPlayerState = IDLE;
-	//mCameraState = NORMAL;
-	//mAnimationState->setLoop(true);
-	//mAnimationState->setEnabled(true);
+
 
 	mSavePointRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("ProfessorRoot");
 
@@ -63,13 +59,6 @@ void PlayState::enter(void)
 	mEnemyAnimState = mSavePointEntity->getAnimationState("Lift");
 	mEnemyAnimState->setLoop(true);
 	mEnemyAnimState->setEnabled(true);
-	//mSavePointRoot->setScale(Vector3(500.0f, 500.0f, 500.f));
-	//mSavePointRoot->attachObject(mSavePointEntity);
-	//mSavePointEntity->setCastShadows(true);
-	//mSavePointRoot->setPosition(Vector3(10.0f, 10.0f, 10.0f));
-	//mSavePointRoot->setScale(Vector3(155.0f, 155.0f, 155.0f));
-	
-	//setPosition(Vector3(0.0f, 10.0f, 100.0f));
 
 }
 
