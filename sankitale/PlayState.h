@@ -23,17 +23,17 @@ public:
 
 	static PlayState* getInstance() { return &mPlayState; }
 
-	void setAnimState(Ogre::AnimationState* anim) { mAnimationState = anim; }
-
+	void setAnimState(Ogre::AnimationState* anim) { mRunAnimState = anim; }
+	void camerarotate();
 private:
-	//const Ogre::FrameEvent& evt;
+
 	void _setLights(void);
 	void _drawGroundPlane(void);
 	void _drawGridPlane(void);
-	void _drawStatusPlane(void);
-	bool mContinue;
-	static PlayState mPlayState;
 
+
+	static PlayState mPlayState;
+	Ogre::Vector3 mCharacterDirection;
 	Ogre::Root *mRoot;
 	Ogre::RenderWindow* mWindow;
 	Ogre::SceneManager* mSceneMgr;
@@ -46,32 +46,14 @@ private:
 	Ogre::SceneNode* mCameraHolder;
 	Ogre::SceneNode* mCameraYaw;
 	Ogre::SceneNode* mCameraPitch;
-	
 
-	
-	Ogre::Vector3 mCharacterDirection;
 	Ogre::Entity* mCharacterEntity;
-	
-	
 
-	Ogre::AnimationState* mAnimationState;
-	Ogre::AnimationState* mEnemyAnimState;
+	Ogre::AnimationState* mRunAnimState;
+
 	Ogre::Overlay*           mInformationOverlay;
-	int mPlayerState;
-	int mCameraState;
-	int mStatusState;
-	int mStatusHeartState;
-	enum {RIGHT_ROTATION,LEFT_ROTATION,NORMAL};
-	enum  {IDLE,WALK,RUN};
-	enum{STATUSOVERLAY,PLAY};
-	enum{SAVE,BACK};
 
-	Ogre::SceneNode* mSavePointRoot;
-	Ogre::Entity* mSavePointEntity;
-
-
-	Ogre::Overlay* mStatusOverlay;
-	Ogre::Overlay* mHeartOverlay;
-	//Ogre::Overlay* mBackHeartOverlay;
-	Ogre::OverlayElement* mStatusMsg;
+	bool mContinue;
+	enum{LEFT_ROTATE,RIGHT_ROTATE,NORMAL};
+	short mCharacterRotateState;
 };
