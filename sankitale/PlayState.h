@@ -24,7 +24,6 @@ public:
 	static PlayState* getInstance() { return &mPlayState; }
 
 	void setAnimState(Ogre::AnimationState* anim) { mAnimatonState = anim; }
-	void camerarotate();
 private:
 
 	void _setLights(void);
@@ -46,7 +45,9 @@ private:
 	Ogre::SceneNode* mCameraHolder;
 	Ogre::SceneNode* mCameraYaw;
 	Ogre::SceneNode* mCameraPitch;
-
+	Ogre::SceneNode* mGroundNode;;
+	Ogre::SceneNode* mBrickNode;
+	Ogre::SceneNode* mPillarNode;
 
 	Ogre::Entity* mCharacterEntity;
 

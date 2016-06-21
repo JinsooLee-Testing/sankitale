@@ -73,13 +73,14 @@ void PlayState::resume(void)
 
 bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 {
+	const float CHARACTER_MOVE_SPEED = 444.0f;
 	if (mCharacterDirection != Vector3::ZERO)
 	{
 		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
 		Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
 		mCharacterYaw->setOrientation(quat);
 		//camerarotate();
-		mCharacterRoot->translate(mCharacterDirection.normalisedCopy() * 600 * evt.timeSinceLastFrame
+		mCharacterRoot->translate(mCharacterDirection.normalisedCopy() * CHARACTER_MOVE_SPEED * evt.timeSinceLastFrame
 			, Node::TransformSpace::TS_LOCAL);
 	}
 	else
@@ -130,8 +131,10 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	// Fill Here -------------------------------------------
 	switch (e.key)
 	{
-	case OIS::KC_W: case OIS::KC_UP:    mCharacterDirection.z += -1.f;  break;
-	case OIS::KC_S: case OIS::KC_DOWN:  mCharacterDirection.z += 1.f; break;
+	case OIS::KC_W: case OIS::KC_UP: 
+		mCharacterDirection.z += -1.f;  break;
+	case OIS::KC_S: case OIS::KC_DOWN:  
+		mCharacterDirection.z += 1.f; break;
 	case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x += -1.f;break;
 	case OIS::KC_D: case OIS::KC_RIGHT: mCharacterDirection.x += 1.f; break;
 	case OIS::KC_ESCAPE: mContinue = false; break;
@@ -158,11 +161,6 @@ bool PlayState::mouseMoved(GameManager* game, const OIS::MouseEvent &e)
 	return true;
 }
 
-void PlayState::camerarotate()
-{
-	
-}
-
 void PlayState::_setLights(void)
 {
 	mSceneMgr->setAmbientLight(ColourValue(0.7f, 0.7f, 0.7f));
@@ -177,20 +175,46 @@ void PlayState::_setLights(void)
 void PlayState::_drawGroundPlane(void)
 {
 	Plane plane(Vector3::UNIT_Y, 0);
-	MeshManager::getSingleton().createPlane(
-		"Ground",
-		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		plane,
-		500, 500,
-		1, 1,
-		true, 1, 5, 5,
-		Vector3::NEGATIVE_UNIT_Z
-		);
+		MeshManager::getSingleton().createPlane(
+			"Ground",
+			ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+			plane,
+			10000, 1000,
+			1, 1,
+			true, 1, 1, 1,
+			Vector3::NEGATIVE_UNIT_Z
+			);
 
 	Entity* groundEntity = mSceneMgr->createEntity("GroundPlane", "Ground");
-	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(groundEntity);
-	groundEntity->setMaterialName("KPU_LOGO");
-	groundEntity->setCastShadows(false);
+	//attachObject(groundEntity);
+	mGroundNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("GroundPlane");
+	mGroundNode->setPosition(0, 0, 4800);
+	mGroundNode->yaw(Degree(90));
+	mGroundNode->attachObject(groundEntity);
+	groundEntity->setMaterialName("UnderGround");
+	groundEntity->setCastShadows(false);	
+
+	
+
+	Plane brick(Vector3::UNIT_Y, 0);
+	MeshManager::getSingleton().createPlane(
+		"Brick",
+		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		brick,
+		10000, 500,
+		1, 1,
+		true, 1,20, 1,
+		Vector3::NEGATIVE_UNIT_Z
+		);
+	Entity* brickEntity = mSceneMgr->createEntity("BrickPlane", "Brick");
+	mBrickNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("BrickPlane");
+	mBrickNode->setPosition(500.0f, 250.0f, 4800.0f);
+	mBrickNode->roll(Degree(90), Ogre::Node::TS_WORLD);
+	mBrickNode->pitch(Degree(90), Ogre::Node::TS_WORLD);
+	//mBrickNode->yaw(Degree(90), Ogre::Node::TS_WORLD);
+	mBrickNode->attachObject(brickEntity);
+	brickEntity->setMaterialName("BRICK");
+	brickEntity->setCastShadows(true);
 }
 
 void PlayState::_drawGridPlane(void)
