@@ -65,8 +65,11 @@ bool TitleState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	case OIS::KC_ESCAPE:
 		mContinue = false;
 		break;
-	default:
+	case OIS::KC_Z:
 		game->changeState(PlayState::getInstance());
+		break;
+	default:
+		
 		break;
 	}
   // -----------------------------------------------------------------
