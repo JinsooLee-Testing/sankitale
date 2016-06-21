@@ -47,7 +47,8 @@ private:
 	Ogre::SceneNode* mCameraPitch;
 	Ogre::SceneNode* mGroundNode;;
 	Ogre::SceneNode* mBrickNode;
-	Ogre::SceneNode* mPillarNode;
+	Ogre::SceneNode* mBrickNode2;
+	Ogre::SceneNode* mPortalNode;
 
 	Ogre::Entity* mCharacterEntity;
 

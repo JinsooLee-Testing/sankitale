@@ -201,20 +201,60 @@ void PlayState::_drawGroundPlane(void)
 		"Brick",
 		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		brick,
-		10000, 500,
+		10000, 1000,
 		1, 1,
-		true, 1,20, 1,
+		true, 1,1, 1,
 		Vector3::NEGATIVE_UNIT_Z
 		);
 	Entity* brickEntity = mSceneMgr->createEntity("BrickPlane", "Brick");
 	mBrickNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("BrickPlane");
-	mBrickNode->setPosition(500.0f, 250.0f, 4800.0f);
+	mBrickNode->setPosition(500.0f, 500.0f, 4800.0f);
 	mBrickNode->roll(Degree(90), Ogre::Node::TS_WORLD);
 	mBrickNode->pitch(Degree(90), Ogre::Node::TS_WORLD);
 	//mBrickNode->yaw(Degree(90), Ogre::Node::TS_WORLD);
 	mBrickNode->attachObject(brickEntity);
 	brickEntity->setMaterialName("BRICK");
 	brickEntity->setCastShadows(true);
+
+	Plane brick2(Vector3::UNIT_Y, 0);
+	MeshManager::getSingleton().createPlane(
+		"Brick2",
+		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		brick,
+		10000, 1000,
+		1, 1,
+		true, 1, 1, 1,
+		Vector3::NEGATIVE_UNIT_Z
+		);
+	Entity* brickEntity2 = mSceneMgr->createEntity("BrickPlane2", "Brick2");
+	mBrickNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode("BrickPlane2");
+	mBrickNode2->setPosition(-500.0f, 500.0f, 4800.0f);
+	mBrickNode2->roll(Degree(90), Ogre::Node::TS_WORLD);
+	mBrickNode2->pitch(Degree(90), Ogre::Node::TS_WORLD);
+	mBrickNode2->yaw(Degree(180), Ogre::Node::TS_WORLD);
+	mBrickNode2->attachObject(brickEntity2);
+	brickEntity2->setMaterialName("BRICK");
+	brickEntity2->setCastShadows(true);
+
+	Plane portal(Vector3::UNIT_Y, 0);
+	MeshManager::getSingleton().createPlane(
+		"portal",
+		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		portal,
+		1000, 1000,
+		1, 1,
+		true, 1, 1, 1,
+		Vector3::NEGATIVE_UNIT_Z
+		);
+	Entity* portalEntity = mSceneMgr->createEntity("portalPlane", "portal");
+	mPortalNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("portalPlane");
+	mPortalNode->setPosition(0, 250, 10000);
+	mPortalNode->roll(Degree(90), Ogre::Node::TS_WORLD);
+	//mPortalNode->pitch(Degree(270), Ogre::Node::TS_WORLD);
+	mPortalNode->yaw(Degree(270), Ogre::Node::TS_WORLD);
+	mPortalNode->attachObject(portalEntity);
+	portalEntity->setMaterialName("PORTAL");
+	portalEntity->setCastShadows(true);
 }
 
 void PlayState::_drawGridPlane(void)
