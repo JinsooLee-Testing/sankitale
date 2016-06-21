@@ -79,18 +79,18 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 
 	static const float mCharacterSpeed = 400.f;
 	camerarotate();
-	//static Vector3 offsetCamera = Vector3::ZERO;
-	//static const float cameraDragSpeed = 100.f;
-	if (mCharacterAnimState = WALK)
-	{
-		if (mCharacterDirection != Vector3::ZERO)
-		{
-			
-			const Vector3 direction = mCharacterDirection.normalisedCopy();
-			mCharacterRoot->translate(direction * mCharacterSpeed * evt.timeSinceLastFrame, Node::TS_PARENT);
-			//Node::TransformSpace::TS_LOCAL);
-		}
-	}
+	/*static Vector3 offsetcamera = Vector3::zero;
+	static const float cameradragspeed = 100.f;*/
+	//if (mcharacteranimstate = walk)
+	//{
+	//	if (mcharacterdirection != Vector3::zero)
+	//	{
+	//		
+	//		const Vector3 direction = mcharacterdirection.normalisedcopy();
+	//		mcharacterroot->translate(direction * mcharacterspeed * evt.timesincelastframe,
+	//		node::transformspace::ts_local);
+	//	}
+	//}
 	//mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
 	//const Vector3 direction = mCharacterDirection.normalisedCopy();
 	//Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
@@ -188,14 +188,22 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 		
 	case OIS::KC_W: case OIS::KC_UP:
 		mCharacterAnimState = IDLE;
-		mAnimatonState = mCharacterEntity->getAnimationState("Idle");   
-		mCharacterDirection.z -= 1.f;
+		mAnimatonState = mCharacterEntity->getAnimationState("Idle");
+		mAnimatonState->setLoop(true);
+		mAnimatonState->setEnabled(true);
+
+	    mCharacterDirection.z -= 1.f;
 		break;
 	case OIS::KC_S: case OIS::KC_DOWN: mCharacterAnimState = IDLE;
 		mAnimatonState = mCharacterEntity->getAnimationState("Idle");
+		mAnimatonState->setLoop(true);
+		mAnimatonState->setEnabled(true);
 		mCharacterDirection.z -= -1.f;
 		break;
-	case OIS::KC_A: case OIS::KC_LEFT: mCharacterRotateState = NORMAL;  break;
+	case OIS::KC_A: case OIS::KC_LEFT:
+		mCharacterRotateState = NORMAL; 
+		//mCharacterDirection.x -= -1.f;
+		break;
 		//case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x -= -1.f; break;
 	case OIS::KC_D: case OIS::KC_RIGHT:  mCharacterRotateState = NORMAL; break;
 	case OIS::KC_ESCAPE: mContinue = false; break;
@@ -219,7 +227,10 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 		mAnimatonState = mCharacterEntity->getAnimationState("Walk");  
 		mCharacterDirection.z += -1.f;
 		break;
-	case OIS::KC_A: case OIS::KC_LEFT: mCharacterRotateState = LEFT_ROTATE; break;
+	case OIS::KC_A: case OIS::KC_LEFT: 
+		mCharacterRotateState = LEFT_ROTATE; 
+		//mCharacterDirection.x += -1.f;
+			break;
 		//case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x += -1.f; break;
 	case OIS::KC_D: case OIS::KC_RIGHT: mCharacterRotateState = RIGHT_ROTATE; break;
 	case OIS::KC_ESCAPE: mContinue = false; break;
@@ -250,14 +261,17 @@ bool PlayState::mouseMoved(GameManager* game, const OIS::MouseEvent &e)
 
 void PlayState::camerarotate()
 {
+	
 	if (RIGHT_ROTATE == mCharacterRotateState)
 	{
-
-		
+	
 		mCameraYaw->rotate(Ogre::Vector3::UNIT_Y,
 			Ogre::Degree(-1.f),
 			Ogre::Node::TS_PARENT);
 		mCharacterYaw->rotate(Ogre::Vector3::UNIT_Y,
+			Ogre::Degree(-1.f),
+			Ogre::Node::TS_PARENT);
+		mCharacterRoot->rotate(Ogre::Vector3::UNIT_Y,
 			Ogre::Degree(-1.f),
 			Ogre::Node::TS_PARENT);
 	}
@@ -269,6 +283,9 @@ void PlayState::camerarotate()
 		mCharacterYaw->rotate(Ogre::Vector3::UNIT_Y,
 			Ogre::Degree(1.f),
 			Ogre::Node::TS_PARENT);
+		mCharacterRoot->rotate(Ogre::Vector3::UNIT_Y,
+			Ogre::Degree(1.f),
+			Ogre::Node::TS_PARENT);
 	}
 	else if (NORMAL == mCharacterRotateState)
 	{
@@ -276,6 +293,9 @@ void PlayState::camerarotate()
 			Ogre::Degree(0.f),
 			Ogre::Node::TS_PARENT);
 		mCharacterYaw->rotate(Ogre::Vector3::UNIT_Y,
+			Ogre::Degree(0.f),
+			Ogre::Node::TS_PARENT);
+		mCharacterRoot->rotate(Ogre::Vector3::UNIT_Y,
 			Ogre::Degree(0.f),
 			Ogre::Node::TS_PARENT);
 	}

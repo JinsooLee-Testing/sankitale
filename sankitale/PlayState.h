@@ -59,4 +59,6 @@ private:
 	short mCharacterRotateState;
 	enum{IDLE,WALK};
 	short mCharacterAnimState;
+	enum{FWALK,STOP,BWALK};
+	short mCharacterMove;
 };
