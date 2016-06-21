@@ -47,18 +47,12 @@ private:
 	Ogre::SceneNode* mCameraYaw;
 	Ogre::SceneNode* mCameraPitch;
 
+
 	Ogre::Entity* mCharacterEntity;
 
 	Ogre::AnimationState* mAnimatonState;
-	//Ogre::AnimationState* mIdleAnimState;
 
 	Ogre::Overlay*           mInformationOverlay;
 
 	bool mContinue;
-	enum{LEFT_ROTATE,RIGHT_ROTATE,NORMAL};
-	short mCharacterRotateState;
-	enum{IDLE,WALK};
-	short mCharacterAnimState;
-	enum{FWALK,STOP,BWALK};
-	short mCharacterMove;
 };
