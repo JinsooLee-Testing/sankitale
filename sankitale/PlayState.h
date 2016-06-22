@@ -23,6 +23,7 @@ public:
 
 	static PlayState* getInstance() { return &mPlayState; }
 
+	bool beInRange(Ogre::Vector3 me, Ogre::Vector3 other);
 	void setAnimState(Ogre::AnimationState* anim) { mAnimationState = anim; }
 private:
 

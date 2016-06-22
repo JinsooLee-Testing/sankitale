@@ -1,7 +1,7 @@
 #include "PlayState.h"
 #include "TitleState.h"
 #include "OptionState.h"
-
+#include<math.h>
 using namespace Ogre;
 
 PlayState PlayState::mPlayState;
@@ -29,7 +29,7 @@ void PlayState::enter(void)
 	mCharacterRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("ProfessorRoot");
 	mCharacterYaw = mCharacterRoot->createChildSceneNode("ProfessorYaw");
 	mDoorNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("Door", Vector3(0, 0, -300.0f));
-	mSavePointRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("SavePoint",Vector3(-300.0f,30,300.0f));
+	mSavePointRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("SavePoint",Vector3(-300.0f,1.0f,300.0f));
 	
 	//mSavePointYaw = mCharacterRoot->createChildSceneNode("SavePointYaw");
 	mCharacterDirection = Ogre::Vector3::ZERO;
@@ -94,14 +94,16 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 	mAnimationState->addTime(evt.timeSinceLastFrame);
 	mSavePointRoot->pitch(Degree(30.f*evt.timeSinceLastFrame));
 	const float CHARACTER_MOVE_SPEED = 666.0f;
+	const float MAX_X_POS = 450.0f; 
+	const float MIN_X_POS = -450.0f;
 	if (mCharacterDirection != Vector3::ZERO)
 	{
 		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
 		Quaternion quat = Vector3(Vector3::UNIT_Z).getRotationTo(mCharacterDirection);
 		mCharacterYaw->setOrientation(quat);
 		//camerarotate();
-		mCharacterRoot->translate(mCharacterDirection.normalisedCopy() * CHARACTER_MOVE_SPEED * evt.timeSinceLastFrame
-			, Node::TransformSpace::TS_LOCAL);
+			mCharacterRoot->translate(mCharacterDirection.normalisedCopy() * CHARACTER_MOVE_SPEED * evt.timeSinceLastFrame
+				, Node::TransformSpace::TS_LOCAL);
 	}
 	else
 	{
@@ -113,21 +115,23 @@ bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 
 bool PlayState::frameEnded(GameManager* game, const FrameEvent& evt)
 {
-#if 0
+
 	static Ogre::DisplayString currFps = L"현재 FPS: ";
 	static Ogre::DisplayString avgFps = L"평균 FPS: ";
 	static Ogre::DisplayString bestFps = L"최고 FPS: ";
 	static Ogre::DisplayString worstFps = L"최저 FPS: ";
+	static Ogre::DisplayString curPos = L"현재 Pos(x,y,z):";
 	OverlayElement* guiAvg = OverlayManager::getSingleton().getOverlayElement("AverageFps");
 	OverlayElement* guiCurr = OverlayManager::getSingleton().getOverlayElement("CurrFps");
 	OverlayElement* guiBest = OverlayManager::getSingleton().getOverlayElement("BestFps");
 	OverlayElement* guiWorst = OverlayManager::getSingleton().getOverlayElement("WorstFps");
+	OverlayElement* guiPos = OverlayManager::getSingleton().getOverlayElement("PlayerPos");
 	const RenderTarget::FrameStats& stats = mRoot->getAutoCreatedWindow()->getStatistics();
 	guiAvg->setCaption(avgFps + StringConverter::toString(stats.avgFPS));
 	guiCurr->setCaption(currFps + StringConverter::toString(stats.lastFPS));
 	guiBest->setCaption(bestFps + StringConverter::toString(stats.bestFPS));
 	guiWorst->setCaption(worstFps + StringConverter::toString(stats.worstFPS));
-#endif
+	guiPos->setCaption(curPos + StringConverter::toString(mCharacterRoot->getPosition()));
 	return mContinue;
 }
 
@@ -212,6 +216,15 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 		mAnimationState->setEnabled(true);
 		mCharacterDirection.x += 1.f; 
 		break;
+	case OIS::KC_Z:
+		if ((mCharacterRoot->getPosition()-mSavePointRoot->getPosition()).length() < 200.0f)
+		{
+			mAnimationState->setEnabled(false);
+			mAnimationState = mCharacterEntity->getAnimationState("Jumping");
+			mAnimationState->setLoop(true);
+			mAnimationState->setEnabled(true);
+		}
+		break;
 	case OIS::KC_ESCAPE: mContinue = false; break;
 	}
 	// -----------------------------------------------------
@@ -234,6 +247,16 @@ bool PlayState::mouseMoved(GameManager* game, const OIS::MouseEvent &e)
 	mCameraYaw->yaw(Degree(-e.state.X.rel*0.5f));
 	mCameraHolder->translate(Ogre::Vector3(0, 0, -e.state.Z.rel * 0.01f));
 	return true;
+}
+
+bool PlayState::beInRange(Ogre::Vector3 me, Ogre::Vector3 other)
+{
+	float zDist = (me.z - other.z)*(me.z-other.z);
+	float xDist = (me.x - other.x)*(me.x - other.x);
+	float result = sqrt(zDist + xDist);
+	if (result < 15.0f) return true;
+	else false;
+
 }
 
 void PlayState::_setLights(void)
