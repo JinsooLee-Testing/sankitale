@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameState.h"
+#include"SoundManager.h"
 #include <vector>
 using namespace std;
 using namespace std::chrono;

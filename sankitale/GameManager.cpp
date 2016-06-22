@@ -2,7 +2,8 @@
 
 #include "GameManager.h"
 #include "GameState.h"
-
+#include"SoundManager.h"
+#pragma comment(lib,"fmodex_vc.lib")
 using namespace Ogre;
 
 GameManager::GameManager()
