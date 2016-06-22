@@ -16,9 +16,9 @@ void TitleState::enter(void)
   mStartMsg = OverlayManager::getSingleton().getOverlayElement("StartMsg");
   mTitleOverlay->show();
   mStartMsg->show();
-  SoundManager::sharedManager()->init();
-  SoundManager::sharedManager()->loading();
-  SoundManager::sharedManager()->play(TITLE_SOUND);
+  SoundManager::getInstance()->init();
+  SoundManager::getInstance()->loading();
+  SoundManager::getInstance()->play(TITLE_SOUND);
 }
 
 void TitleState::exit(void)

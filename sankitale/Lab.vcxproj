@@ -69,11 +69,15 @@
     <OutDir>$(OGRE_HOME)\bin\$(Configuration)\</OutDir>
     <IntDir>$(OGRE_HOME)\obj\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\Dev\sankitale\sankitale;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Dev\sankitale\sankitale;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>d:\bin\$(Configuration)\</OutDir>
     <IntDir>d:\bin\int\$(Configuration)\</IntDir>
+    <IncludePath>D:\Dev\sankitale\sankitale;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Dev\sankitale\sankitale;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>bin\$(Configuration)\</OutDir>
@@ -128,7 +132,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreOverlay_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fmodex64_vc.lib;OgreMain_d.lib;OIS_d.lib;OgreOverlay_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -198,9 +202,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="IntroState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OptionState.cpp" />
     <ClCompile Include="PlayState.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="TitleState.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -251,10 +257,19 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fmod.h" />
+    <ClInclude Include="fmod.hpp" />
+    <ClInclude Include="fmod_codec.h" />
+    <ClInclude Include="fmod_dsp.h" />
+    <ClInclude Include="fmod_errors.h" />
+    <ClInclude Include="fmod_memoryinfo.h" />
+    <ClInclude Include="fmod_output.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameState.h" />
+    <ClInclude Include="IntroState.h" />
     <ClInclude Include="OptionState.h" />
     <ClInclude Include="PlayState.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="TitleState.h" />
   </ItemGroup>
   <ItemGroup>

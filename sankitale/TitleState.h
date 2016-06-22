@@ -37,6 +37,7 @@ private:
   Ogre::Overlay* mTitleOverlay;
   std::vector<Ogre::Overlay*> mIntroSceneOverlay;
   Ogre::OverlayElement* mStartMsg;
+
   //std::chrono::time_point<std::chrono::steady_clock> startTimer;
   //std::chrono::time_point<std::chrono::steady_clock> endTimer;
 };

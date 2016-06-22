@@ -9,6 +9,9 @@ PlayState PlayState::mPlayState;
 
 void PlayState::enter(void)
 {
+	SoundManager::getInstance()->init();
+	SoundManager::getInstance()->loading();
+	SoundManager::getInstance()->play(PLAY_SOUND);
 	mAnimationOperation = IDLE;
 	mContinue = true;
 	mRoot = Root::getSingletonPtr();
@@ -173,7 +176,9 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 		mAnimationState->setEnabled(true);
 		mCharacterDirection.x -= 1.f; 
 		break;
-	case OIS::KC_ESCAPE: mContinue = false; break;
+	case OIS::KC_ESCAPE: mContinue = false; 
+		SoundManager::getInstance()->stop(PLAY_SOUND); 
+		break;
 	}
 
 	return true;
@@ -225,7 +230,9 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 			mAnimationState->setEnabled(true);
 		}
 		break;
-	case OIS::KC_ESCAPE: mContinue = false; break;
+	case OIS::KC_ESCAPE: mContinue = false;
+		SoundManager::getInstance()->stop(PLAY_SOUND); 
+		break;
 	}
 	// -----------------------------------------------------
 	return true;

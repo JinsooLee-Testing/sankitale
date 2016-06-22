@@ -1,17 +1,22 @@
 #include"SoundManager.h"
 #include"fmod_errors.h"
 
-SoundManager* SoundManager::sharedManager()
+#include<iostream>
+SoundManager SoundManager::mSoundManager;
+
+void SoundManager::init()
 {
-	if (instance == nullptr) instance = new SoundManager;
-	return instance;
+	result = System_Create(&mFmod);
+	ErrorCheck(result);
+	result = mFmod->init(100, FMOD_INIT_NORMAL, NULL);
+	ErrorCheck(result);
 }
 
 void SoundManager::loading()
 {
-	//result = mFmod->createSound("INTRO_SOUND", FMOD_DEFAULT, nullptr, &mSound[INTRO_SOUND]);
+	result = mFmod->createSound("Sound/INTRO.mp3", FMOD_DEFAULT, nullptr, &mSound[INTRO_SOUND]);
 	result = mFmod->createSound("Sound/TITLE.wav", FMOD_DEFAULT, nullptr, &mSound[TITLE_SOUND]);
-	//result = mFmod->createSound("PLAY_SOUND", FMOD_DEFAULT, nullptr, &mSound[PLAY_SOUND]);
+	result = mFmod->createSound("Sound/PLAYSTATE.mp3", FMOD_DEFAULT, nullptr, &mSound[PLAY_SOUND]);
 	//result = mFmod->createSound("SAVE_SOUND", FMOD_DEFAULT, nullptr, &mSound[SAVE_SOUND]);
 }
 
