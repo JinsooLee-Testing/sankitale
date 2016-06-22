@@ -9,6 +9,7 @@ PlayState PlayState::mPlayState;
 
 void PlayState::enter(void)
 {
+	mAnimationOperation = IDLE;
 	mContinue = true;
 	mRoot = Root::getSingletonPtr();
 	mRoot->getAutoCreatedWindow()->resetStatistics();
@@ -43,9 +44,9 @@ void PlayState::enter(void)
 	mCamera->lookAt(mCameraYaw->getPosition());
 
 
-	mAnimatonState = mCharacterEntity->getAnimationState("Idle");
-	mAnimatonState->setLoop(true);
-	mAnimatonState->setEnabled(true);
+	mAnimationState = mCharacterEntity->getAnimationState("Idle");
+	mAnimationState->setLoop(true);
+	mAnimationState->setEnabled(true);
 }
 
 void PlayState::exit(void)
@@ -73,6 +74,7 @@ void PlayState::resume(void)
 
 bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 {
+	mAnimationState->addTime(evt.timeSinceLastFrame);
 	const float CHARACTER_MOVE_SPEED = 444.0f;
 	if (mCharacterDirection != Vector3::ZERO)
 	{
@@ -116,10 +118,39 @@ bool PlayState::keyReleased(GameManager* game, const OIS::KeyEvent &e)
 {
 	switch (e.key)
 	{
-	case OIS::KC_W: case OIS::KC_UP:    mCharacterDirection.z -= -1.f; break;
-	case OIS::KC_S: case OIS::KC_DOWN:  mCharacterDirection.z -= 1.f; break;
-	case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x -= -1.f;break;
-	case OIS::KC_D: case OIS::KC_RIGHT: mCharacterDirection.x -= 1.f; break;
+	case OIS::KC_W: case OIS::KC_UP:   
+		mAnimationOperation = IDLE;
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Idle");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
+		mCharacterDirection.z -= -1.f;
+
+		break;
+	case OIS::KC_S: case OIS::KC_DOWN: 
+		mAnimationOperation = IDLE;
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Idle");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
+		mCharacterDirection.z -= 1.f;
+		break;
+	case OIS::KC_A: case OIS::KC_LEFT: 
+		mAnimationOperation = IDLE;
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Idle");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
+		mCharacterDirection.x -= -1.f;
+		break;
+	case OIS::KC_D: case OIS::KC_RIGHT: 
+		mAnimationOperation = IDLE;
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Idle");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
+		mCharacterDirection.x -= 1.f; 
+		break;
 	case OIS::KC_ESCAPE: mContinue = false; break;
 	}
 
@@ -132,11 +163,37 @@ bool PlayState::keyPressed(GameManager* game, const OIS::KeyEvent &e)
 	switch (e.key)
 	{
 	case OIS::KC_W: case OIS::KC_UP: 
-		mCharacterDirection.z += -1.f;  break;
+		mAnimationOperation = WALK;
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Walk");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
+		mCharacterDirection.z += -1.f; 
+		break;
 	case OIS::KC_S: case OIS::KC_DOWN:  
-		mCharacterDirection.z += 1.f; break;
-	case OIS::KC_A: case OIS::KC_LEFT:  mCharacterDirection.x += -1.f;break;
-	case OIS::KC_D: case OIS::KC_RIGHT: mCharacterDirection.x += 1.f; break;
+		mAnimationOperation = WALK;
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Walk");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
+		mCharacterDirection.z += 1.f;
+		break;
+	case OIS::KC_A: case OIS::KC_LEFT: 
+		mAnimationOperation = WALK;
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Walk");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
+		mCharacterDirection.x += -1.f;
+		break;
+	case OIS::KC_D: case OIS::KC_RIGHT: 
+		mAnimationOperation = WALK;
+		mAnimationState->setEnabled(false);
+		mAnimationState = mCharacterEntity->getAnimationState("Walk");
+		mAnimationState->setLoop(true);
+		mAnimationState->setEnabled(true);
+		mCharacterDirection.x += 1.f; 
+		break;
 	case OIS::KC_ESCAPE: mContinue = false; break;
 	}
 	// -----------------------------------------------------

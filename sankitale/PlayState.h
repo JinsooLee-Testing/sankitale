@@ -23,7 +23,7 @@ public:
 
 	static PlayState* getInstance() { return &mPlayState; }
 
-	void setAnimState(Ogre::AnimationState* anim) { mAnimatonState = anim; }
+	void setAnimState(Ogre::AnimationState* anim) { mAnimationState = anim; }
 private:
 
 	void _setLights(void);
@@ -52,7 +52,9 @@ private:
 
 	Ogre::Entity* mCharacterEntity;
 
-	Ogre::AnimationState* mAnimatonState;
+	Ogre::AnimationState* mAnimationState;
+	short mAnimationOperation;
+	enum{WALK,IDLE};
 
 	Ogre::Overlay*           mInformationOverlay;
 
