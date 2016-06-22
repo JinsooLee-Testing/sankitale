@@ -42,6 +42,7 @@ private:
 
 	Ogre::SceneNode* mCharacterRoot;
 	Ogre::SceneNode* mCharacterYaw;
+	Ogre::SceneNode* mSavePointRoot;
 	Ogre::SceneNode* mCameraHolder;
 	Ogre::SceneNode* mCameraYaw;
 	Ogre::SceneNode* mCameraPitch;
@@ -49,9 +50,11 @@ private:
 	Ogre::SceneNode* mBrickNode;
 	Ogre::SceneNode* mBrickNode2;
 	Ogre::SceneNode* mPortalNode;
+	Ogre::SceneNode* mDoorNode;
 
 	Ogre::Entity* mCharacterEntity;
-
+	Ogre::Entity* mSavePointEntity;
+	Ogre::Entity* mDoorEntity;
 	Ogre::AnimationState* mAnimationState;
 	short mAnimationOperation;
 	enum{WALK,IDLE};

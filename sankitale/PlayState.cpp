@@ -27,7 +27,10 @@ void PlayState::enter(void)
 
 	mCharacterRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("ProfessorRoot");
 	mCharacterYaw = mCharacterRoot->createChildSceneNode("ProfessorYaw");
-
+	mDoorNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("Door", Vector3(0, 0, -300.0f));
+	//mSavePointRoot = mSceneMgr->getRootSceneNode()->createChildSceneNode("SavePoint",Vector3(0,50.0f,30.0f));
+	
+	//mSavePointYaw = mCharacterRoot->createChildSceneNode("SavePointYaw");
 	mCharacterDirection = Ogre::Vector3::ZERO;
 
 	mCameraYaw = mCharacterRoot->createChildSceneNode("CameraYaw", Vector3(0.0f, 120.0f, 0.0f));
@@ -39,6 +42,17 @@ void PlayState::enter(void)
 	mCharacterEntity = mSceneMgr->createEntity("Professor", "DustinBody.mesh");
 	mCharacterYaw->attachObject(mCharacterEntity);
 	mCharacterEntity->setCastShadows(true);
+
+	//mSavePointEntity = mSceneMgr->createEntity("SavePoint", "savedefault.mesh");
+	//mSavePointRoot->attachObject(mSavePointEntity);
+	//mSavePointEntity->setCastShadows(true);
+	//mSavePointRoot->setScale(Vector3(1500, 1500, 1500));
+
+	mDoorEntity = mSceneMgr->createEntity("Door", "Door.mesh");
+	mDoorNode->attachObject(mDoorEntity);
+	mDoorEntity->setCastShadows(true);
+	mDoorNode->setScale(Vector3(2000.0f, 2000.0f, 2000.0f));
+	mDoorNode->pitch(Degree(90));
 
 	mCameraHolder->attachObject(mCamera);
 	mCamera->lookAt(mCameraYaw->getPosition());
@@ -75,7 +89,7 @@ void PlayState::resume(void)
 bool PlayState::frameStarted(GameManager* game, const FrameEvent& evt)
 {
 	mAnimationState->addTime(evt.timeSinceLastFrame);
-	const float CHARACTER_MOVE_SPEED = 444.0f;
+	const float CHARACTER_MOVE_SPEED = 666.0f;
 	if (mCharacterDirection != Vector3::ZERO)
 	{
 		mCharacterRoot->setOrientation(mCameraYaw->getOrientation());
