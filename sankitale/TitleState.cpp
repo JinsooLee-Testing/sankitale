@@ -1,6 +1,6 @@
 #include "TitleState.h"
 #include "PlayState.h"
-
+#include "IntroState.h"
 using namespace Ogre;
 
 //TitleState TitleState::getInstance()
@@ -12,6 +12,7 @@ void TitleState::enter(void)
   
   mContinue = true;
   mTitleOverlay = OverlayManager::getSingleton().getByName("Overlay/Title");
+  mIntroSceneOverlay = {};
   mStartMsg = OverlayManager::getSingleton().getOverlayElement("StartMsg");
   mTitleOverlay->show();
   mStartMsg->show();
@@ -38,15 +39,17 @@ bool TitleState::frameStarted(GameManager* game, const FrameEvent& evt)
 
   elapsed += evt.timeSinceLastFrame;
 
+  if (elapsed >= 3.0f)
+  {
+	  //game->changeState(PlayState::getInstance());
+    mStartMsg->show();
+  }
   if (elapsed >= 5.0f)
   {
-	  game->changeState(PlayState::getInstance());
-    //mStartMsg->show();
+	  mStartMsg->hide();
+	  //game->changeState(IntroState::getInstance());
   }
-  else
-  {
-    //mStartMsg->hide();
-  }
+
 
   return true;
 }

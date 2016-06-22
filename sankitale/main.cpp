@@ -11,6 +11,7 @@
 #include "GameManager.h"
 #include "TitleState.h"
 #include "PlayState.h"
+#include"IntroState.h"
 
 using namespace Ogre;
 
@@ -28,7 +29,7 @@ extern "C" {
 	  GameManager game;
 	  try{
 		  game.init();
-		  game.changeState(TitleState::getInstance());
+		  game.changeState(IntroState::getInstance());
 		  game.go();
 	  }
 
